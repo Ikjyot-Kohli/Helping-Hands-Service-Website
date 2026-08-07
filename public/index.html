@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Helping Hand - Vasai Community Donation & Book Sharing Platform</title>
+  <meta name="description" content="Donate books, donate clothes, borrow textbooks, and volunteer for underprivileged children in Vasai, Virar & Nalasopara." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              sky: '#0284c7',
+              emerald: '#059669',
+              orange: '#f97316',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans transition-colors duration-300 antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- TOP ANNOUNCEMENT BANNER -->
+  <div id="topBanner" class="bg-gradient-to-r from-sky-600 via-emerald-600 to-orange-500 text-white text-xs py-2 px-4 text-center font-medium shadow-sm flex items-center justify-center gap-2 relative z-50">
+    <i data-lucide="sparkles" class="w-4 h-4 animate-spin text-yellow-300"></i>
+    <span id="txtBannerMsg">Community Drive Active in Vasai, Virar & Nalasopara! Over 1,420+ Children Benefited This Month ❤️</span>
+    <button onclick="openDonateModal()" id="btnBannerDonate" class="ml-3 bg-white text-emerald-700 hover:bg-emerald-50 px-3 py-0.5 rounded-full font-bold transition shadow-xs text-[11px] cursor-pointer">
+      Donate Now
+    </button>
+  </div>
+
+  <!-- DYNAMIC NAVIGATION BAR -->
+  <nav id="mainNav" class="sticky top-0 z-40 backdrop-blur-md bg-white/85 dark:bg-slate-950/85 border-b border-slate-200 dark:border-slate-800 shadow-xs transition-all duration-300">
+    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+      
+      <!-- LOGO -->
+      <a href="#home" class="flex items-center gap-2.5 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 via-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform duration-300">
+          <i data-lucide="heart" class="w-5 h-5 fill-white animate-pulse"></i>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold bg-gradient-to-r from-sky-600 to-emerald-600 bg-clip-text text-transparent tracking-tight" id="txtLogoName">Helping Hand</span>
+          <p class="text-[9.5px] text-slate-500 dark:text-slate-400 tracking-widest font-semibold uppercase" id="txtLogoSub">Vasai Community Platform</p>
+        </div>
+      </a>
+
+      <!-- DESKTOP NAV LINKS -->
+      <div class="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300" id="navLinks">
+        <a href="#home" class="nav-item hover:text-sky-600 dark:hover:text-sky-400 transition py-1 border-b-2 border-transparent" data-section="home" id="nav-home">Home</a>
+        <a href="#features" class="nav-item hover:text-sky-600 dark:hover:text-sky-400 transition py-1 border-b-2 border-transparent" data-section="features" id="nav-features">Donate</a>
+        <a href="#nearby" class="nav-item hover:text-sky-600 dark:hover:text-sky-400 transition py-1 border-b-2 border-transparent" data-section="nearby" id="nav-nearby">Borrow Books</a>
+        <a href="#volunteers" class="nav-item hover:text-sky-600 dark:hover:text-sky-400 transition py-1 border-b-2 border-transparent" data-section="volunteers" id="nav-volunteers">Volunteers</a>
+        <a href="#about" class="nav-item hover:text-sky-600 dark:hover:text-sky-400 transition py-1 border-b-2 border-transparent" data-section="about" id="nav-about">About</a>
+        <a href="#contact" class="nav-item hover:text-sky-600 dark:hover:text-sky-400 transition py-1 border-b-2 border-transparent" data-section="contact" id="nav-contact">Contact</a>
+      </div>
+
+      <!-- RIGHT NAV TOOLS -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- Language Select -->
+        <select id="langSelect" onchange="changeLanguage(this.value)" class="text-xs bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1.5 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-700 dark:text-slate-200 cursor-pointer">
+          <option value="en">English</option>
+          <option value="hi">हिंदी (Hindi)</option>
+          <option value="mr">मराठी (Marathi)</option>
+        </select>
+
+        <!-- Notifications Bell Button -->
+        <div class="relative">
+          <button onclick="toggleNotificationsDrawer()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition relative cursor-pointer" title="Notifications">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-orange-500 rounded-full animate-ping"></span>
+            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-orange-500 rounded-full"></span>
+          </button>
+        </div>
+
+        <!-- Book Wishlist Button -->
+        <button onclick="toggleWishlistDrawer()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-emerald-600 transition relative cursor-pointer" title="Saved Wishlist">
+          <i data-lucide="bookmark" class="w-5 h-5"></i>
+          <span id="wishlistBadge" class="absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-xs">0</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button onclick="toggleTheme()" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition cursor-pointer" title="Toggle Light/Dark Theme">
+          <i data-lucide="moon" id="themeIcon" class="w-5 h-5"></i>
+        </button>
+
+        <!-- Admin Access Button -->
+        <button onclick="openAdminModal()" class="hidden sm:flex items-center gap-1.5 text-xs bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 px-3.5 py-2 rounded-xl font-bold hover:opacity-90 transition shadow-sm cursor-pointer">
+          <i data-lucide="shield" class="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600"></i>
+          <span id="txtAdminBtn">Admin Portal</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200">
+          <i data-lucide="menu" id="menuIcon" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- MOBILE MENU DRAWER -->
+    <div id="mobileMenu" class="hidden lg:hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-4 py-4 space-y-3 shadow-lg">
+      <a href="#home" onclick="closeMobileMenu()" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-600 py-1" id="mob-home">Home</a>
+      <a href="#features" onclick="closeMobileMenu()" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-600 py-1" id="mob-features">Donate</a>
+      <a href="#nearby" onclick="closeMobileMenu()" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-600 py-1" id="mob-nearby">Borrow Books</a>
+      <a href="#volunteers" onclick="closeMobileMenu()" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-600 py-1" id="mob-volunteers">Volunteers</a>
+      <a href="#about" onclick="closeMobileMenu()" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-600 py-1" id="mob-about">About</a>
+      <a href="#contact" onclick="closeMobileMenu()" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-sky-600 py-1" id="mob-contact">Contact</a>
+      <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <button onclick="openAdminModal(); closeMobileMenu();" class="flex items-center gap-1.5 text-xs bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 px-4 py-2 rounded-lg font-bold cursor-pointer">
+          <i data-lucide="shield" class="w-3.5 h-3.5"></i> <span id="mobAdminBtn">Admin Portal</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO HEADER SECTION -->
+  <header id="home" class="relative overflow-hidden pt-12 pb-20 md:py-24 bg-gradient-to-b from-sky-50/60 via-white to-emerald-50/40 dark:from-slate-900 dark:to-slate-950">
+    <div class="absolute top-10 left-10 w-72 h-72 bg-sky-300/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-emerald-300/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Hero Text -->
+        <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+          <div class="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-xs border border-emerald-200 dark:border-emerald-800">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-orange-500"></i>
+            <span id="txtTagline">Vasai • Virar • Nalasopara • Mumbai Community</span>
+          </div>
+
+          <h1 id="txtHeroTitle" class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15] text-slate-900 dark:text-white">
+            Together We Can Build a <span class="bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent">Better Future.</span>
+          </h1>
+
+          <p id="txtHeroSubtitle" class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            Donate books, donate clothes, become a volunteer, and help children receive the education they deserve across Vasai, Virar, and nearby suburbs.
+          </p>
+
+          <!-- Hero Action Buttons -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+            <button onclick="openVolunteerModal()" class="bg-gradient-to-r from-sky-600 to-emerald-600 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg hover:shadow-sky-500/25 hover:scale-[1.02] transition flex items-center gap-2 cursor-pointer">
+              <i data-lucide="users" class="w-5 h-5"></i>
+              <span id="btnHeroVolunteer">Become a Volunteer</span>
+            </button>
+            <button onclick="openListModal('Book')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg hover:shadow-orange-500/25 hover:scale-[1.02] transition flex items-center gap-2 cursor-pointer">
+              <i data-lucide="heart" class="w-5 h-5 fill-white"></i>
+              <span id="btnHeroDonate">Donate Now</span>
+            </button>
+            <a href="#nearby" class="border border-slate-300 dark:border-slate-700 hover:border-emerald-500 font-semibold px-6 py-3.5 rounded-xl transition flex items-center gap-2 bg-white/50 dark:bg-slate-900/50 text-slate-800 dark:text-slate-100">
+              <i data-lucide="book-open" class="w-5 h-5 text-emerald-600"></i>
+              <span id="btnHeroBorrow">Borrow Books</span>
+            </a>
+          </div>
+
+          <!-- Dynamic Real-Time Counters -->
+          <div class="pt-6 grid grid-cols-3 gap-4 border-t border-slate-200 dark:border-slate-800 max-w-lg mx-auto lg:mx-0">
+            <div class="text-center lg:text-left">
+              <h4 id="statBooks" class="text-2xl sm:text-3xl font-black text-sky-600">3,450+</h4>
+              <p id="lblBooks" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Books Donated</p>
+            </div>
+            <div class="text-center lg:text-left">
+              <h4 id="statClothes" class="text-2xl sm:text-3xl font-black text-emerald-600">1,890+</h4>
+              <p id="lblClothes" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Clothes Shared</p>
+            </div>
+            <div class="text-center lg:text-left">
+              <h4 id="statVolunteers" class="text-2xl sm:text-3xl font-black text-orange-500">450+</h4>
+              <p id="lblVolunteers" class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Active Volunteers</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Image Showcase -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800 aspect-[4/3] group">
+            <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80" alt="Happy Children Learning" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex flex-col justify-end p-6 text-white">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
+                <span id="txtHeroCenterBadge" class="text-xs font-bold tracking-wider uppercase text-emerald-400">Vasai Center Live</span>
+              </div>
+              <h3 id="txtHeroCenterTitle" class="text-xl font-bold">Empowering Local Children Through Shared Books</h3>
+            </div>
+          </div>
+
+          <!-- Floating Badge -->
+          <div class="absolute -bottom-6 -left-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xl flex items-center gap-3 max-w-xs">
+            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-xs">❤️</div>
+            <div>
+              <h5 id="txtFloatTitle" class="text-xs font-bold text-slate-900 dark:text-white">100% Local Impact</h5>
+              <p id="txtFloatSub" class="text-[11px] text-slate-500 dark:text-slate-400">Connecting neighbors within 5km radius in Vasai & Virar.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- LIVE DYNAMIC SEARCH & FILTER SECTION -->
+  <section class="py-8 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 shadow-xs">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-4">
+        
+        <!-- Search Input -->
+        <div class="relative flex-1 w-full">
+          <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400"></i>
+          <input type="text" id="searchInput" oninput="onSearchInput()" placeholder="Search by book name, author, class, clothes type or Vasai/Virar location..." class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400" />
+        </div>
+
+        <!-- Location Selector & List Item CTA -->
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <select id="locationSelect" onchange="onLocationFilterChange()" class="px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-500 cursor-pointer">
+            <option value="All" id="optLocAll">All Locations</option>
+            <option value="Vasai" id="optLocVasai">Vasai (West/East)</option>
+            <option value="Nalasopara" id="optLocNala">Nalasopara</option>
+            <option value="Virar" id="optLocVirar">Virar</option>
+            <option value="Mumbai" id="optLocMum">Mumbai</option>
+          </select>
+
+          <button onclick="openListModal('Book')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl text-sm font-bold flex items-center gap-2 shrink-0 shadow-md transition cursor-pointer">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span id="btnListItem">List Item</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AI Suggestions Chips -->
+      <div class="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+        <span id="txtAiTitle" class="text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-orange-500"></i> AI Suggestions:
+        </span>
+        <button onclick="applyChip(this.innerText)" id="chip1" class="bg-slate-100 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-sky-950/80 px-3 py-1 rounded-full text-slate-700 dark:text-slate-300 transition cursor-pointer border border-slate-200 dark:border-slate-700">
+          Math textbooks in Vasai West
+        </button>
+        <button onclick="applyChip(this.innerText)" id="chip2" class="bg-slate-100 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-sky-950/80 px-3 py-1 rounded-full text-slate-700 dark:text-slate-300 transition cursor-pointer border border-slate-200 dark:border-slate-700">
+          Winter clothes for 10-year-old
+        </button>
+        <button onclick="applyChip(this.innerText)" id="chip3" class="bg-slate-100 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-sky-950/80 px-3 py-1 rounded-full text-slate-700 dark:text-slate-300 transition cursor-pointer border border-slate-200 dark:border-slate-700">
+          Class 10 science reference books
+        </button>
+        <button onclick="applyChip(this.innerText)" id="chip4" class="bg-slate-100 dark:bg-slate-800 hover:bg-sky-100 dark:hover:bg-sky-950/80 px-3 py-1 rounded-full text-slate-700 dark:text-slate-300 transition cursor-pointer border border-slate-200 dark:border-slate-700">
+          Free school uniform in Nalasopara
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES / HOW YOU CAN HELP SECTION -->
+  <section id="features" class="py-20 bg-slate-50 dark:bg-slate-950">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 id="txtFeaturesTitle" class="text-3xl font-extrabold tracking-tight mb-4 text-slate-900 dark:text-white">How You Can Help Your Community</h2>
+        <p id="txtFeaturesSubtitle" class="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+          Every book or piece of clothing you share creates an immediate ripple of hope for underprivileged children in Vasai and nearby suburbs.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Feature 1: Donate Books -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-between hover:border-sky-500 transition duration-300">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl"></div>
+          <div>
+            <div class="w-12 h-12 bg-sky-100 dark:bg-sky-950 text-sky-600 rounded-xl flex items-center justify-center font-bold text-2xl mb-4 shadow-xs">📚</div>
+            <h3 id="txtCard1Title" class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Donate Books</h3>
+            <p id="txtCard1Sub" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">List textbooks, novels, or reference guides you no longer use. Help students access quality education for free.</p>
+          </div>
+          <button onclick="openListModal('Book')" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+            <span id="btnCard1">List a Book</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Feature 2: Donate Clothes -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-between hover:border-emerald-500 transition duration-300">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+          <div>
+            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 rounded-xl flex items-center justify-center font-bold text-2xl mb-4 shadow-xs">👕</div>
+            <h3 id="txtCard2Title" class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Donate Clothes</h3>
+            <p id="txtCard2Sub" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">Share gently worn winter wear, uniforms, and everyday clothes for children and families in need nearby.</p>
+          </div>
+          <button onclick="openListModal('Clothes')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+            <span id="btnCard2">Donate Clothes</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Feature 3: Borrow Books -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-between hover:border-orange-500 transition duration-300">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl"></div>
+          <div>
+            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-950 text-orange-600 rounded-xl flex items-center justify-center font-bold text-2xl mb-4 shadow-xs">📖</div>
+            <h3 id="txtCard3Title" class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Borrow Books</h3>
+            <p id="txtCard3Sub" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">Search nearby available books by class, author, or subject. Request free pickup or digital reservation instantly.</p>
+          </div>
+          <a href="#nearby" onclick="setCategoryFilter('Book')" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+            <span id="btnCard3">Browse Library</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+
+        <!-- Feature 4: Volunteer Registration -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-lg relative overflow-hidden flex flex-col justify-between hover:border-purple-500 transition duration-300">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+          <div>
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-950 text-purple-600 rounded-xl flex items-center justify-center font-bold text-2xl mb-4 shadow-xs">🙋</div>
+            <h3 id="txtCard4Title" class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Volunteer Registration</h3>
+            <p id="txtCard4Sub" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">Join our weekend teaching drives, book sorting camps, and community outreach programs in Vasai & Virar.</p>
+          </div>
+          <button onclick="openVolunteerModal()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition cursor-pointer">
+            <span id="btnCard4">Join as Volunteer</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEARBY DONATIONS GRID -->
+  <section id="nearby" class="py-20 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+    <div class="container mx-auto px-4">
+      
+      <!-- Section Header & Filter Tabs -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+        <div>
+          <div class="inline-flex items-center gap-2 text-sky-600 dark:text-sky-400 font-bold text-xs uppercase tracking-wider mb-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-orange-500"></i> <span id="txtNearbyBadge">Local Community Network</span>
+          </div>
+          <h2 id="txtNearbyTitle" class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Nearby Donations in Vasai & Suburbs</h2>
+          <p id="txtNearbySubtitle" class="text-slate-600 dark:text-slate-400 text-sm mt-1">Connect directly with donors living within 5km of your location.</p>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 p-1.5 rounded-xl text-xs font-semibold">
+          <button id="tabAll" onclick="setCategoryFilter('All')" class="px-4 py-2 rounded-lg transition bg-white dark:bg-slate-900 shadow-xs text-sky-600 dark:text-sky-400 cursor-pointer">All Items</button>
+          <button id="tabBooks" onclick="setCategoryFilter('Book')" class="px-4 py-2 rounded-lg transition text-slate-600 dark:text-slate-400 hover:text-slate-900 cursor-pointer">📚 Books Only</button>
+          <button id="tabClothes" onclick="setCategoryFilter('Clothes')" class="px-4 py-2 rounded-lg transition text-slate-600 dark:text-slate-400 hover:text-slate-900 cursor-pointer">👕 Clothes Only</button>
+        </div>
+      </div>
+
+      <!-- Items Grid Container -->
+      <div id="itemsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Rendered via app.js from Database -->
+        <div class="col-span-full py-12 text-center text-slate-500">
+          <i data-lucide="loader" class="w-8 h-8 animate-spin mx-auto text-sky-600 mb-2"></i>
+          <p>Loading donation items from database...</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- COMMUNITY IMPACT & VOLUNTEER SECTION -->
+  <section id="volunteers" class="py-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 id="txtVolTitle" class="text-3xl font-extrabold tracking-tight mb-3 text-slate-900 dark:text-white">Community Impact & Volunteer Dashboard</h2>
+        <p id="txtVolSubtitle" class="text-slate-600 dark:text-slate-400 text-sm">Real-time metrics of books shared, clothes distributed, and children supported across Vasai-Virar belt.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Callout Banner -->
+        <div class="lg:col-span-7 bg-gradient-to-br from-sky-600 to-emerald-700 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl"></div>
+          <span id="txtVolBannerTag" class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase mb-4 inline-block">Join Our Mission</span>
+          <h3 id="txtVolBannerTitle" class="text-2xl sm:text-3xl font-bold mb-4">Become a Local Hero in Vasai</h3>
+          <p id="txtVolBannerSub" class="text-sky-100 text-sm leading-relaxed mb-6">
+            Our volunteers organize weekend book collection drives, tutor children at local community centers, and sort winter clothes. Spend just 2 hours a week to change lives!
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <button onclick="openVolunteerModal()" id="btnVolBannerReg" class="bg-white text-emerald-700 font-bold px-6 py-3 rounded-xl hover:bg-emerald-50 transition shadow-md cursor-pointer text-sm">
+              Register as Volunteer
+            </button>
+            <button onclick="openDonateModal()" id="btnVolBannerDon" class="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition shadow-md cursor-pointer text-sm">
+              Make a Contribution
+            </button>
+          </div>
+        </div>
+
+        <!-- Recent Volunteer Roster preview -->
+        <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-md">
+          <h4 class="font-bold text-lg mb-4 flex items-center justify-between text-slate-900 dark:text-white">
+            <span id="txtVolRosterTitle">Recent Active Volunteers</span>
+            <span class="text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-semibold px-2.5 py-0.5 rounded-full">Live</span>
+          </h4>
+          <div id="volunteerListPreview" class="space-y-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="py-20 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+    <div class="container mx-auto px-4 max-w-4xl text-center">
+      <div class="w-16 h-16 bg-gradient-to-tr from-sky-500 to-emerald-500 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-lg">
+        <i data-lucide="heart" class="w-8 h-8 fill-white"></i>
+      </div>
+      <h2 id="txtAboutTitle" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-6">About Helping Hand Platform</h2>
+      <p id="txtAboutDesc" class="text-slate-600 dark:text-slate-300 text-base leading-relaxed mb-8">
+        Helping Hand is a community-driven initiative dedicated to bridging the educational and welfare gap for underprivileged children in Vasai, Virar, Nalasopara, and Mumbai. We enable citizens to directly share textbooks, educational reference materials, and essential clothing with nearby families in need.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+        <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <div id="txtAboutBox1Title" class="text-emerald-600 font-extrabold text-lg mb-1">Direct Peer-to-Peer</div>
+          <p id="txtAboutBox1Sub" class="text-xs text-slate-500 dark:text-slate-400">No middlemen. Directly contact donors or request pickup in your neighborhood.</p>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <div id="txtAboutBox2Title" class="text-sky-600 font-extrabold text-lg mb-1">Database Verified</div>
+          <p id="txtAboutBox2Sub" class="text-xs text-slate-500 dark:text-slate-400">All donated items and volunteers are logged and managed in real-time backend database.</p>
+        </div>
+        <div class="bg-slate-50 dark:bg-slate-800/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+          <div id="txtAboutBox3Title" class="text-orange-500 font-extrabold text-lg mb-1">Zero Cost Access</div>
+          <p id="txtAboutBox3Sub" class="text-xs text-slate-500 dark:text-slate-400">100% free borrowing and donation platform for every student and family.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="py-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <div class="text-center mb-12">
+        <h2 id="txtContactTitle" class="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Get in Touch</h2>
+        <p id="txtContactSubtitle" class="text-slate-600 dark:text-slate-400 text-sm">Have a question or want to host a donation drive at your society in Vasai?</p>
+      </div>
+
+      <form id="contactForm" onsubmit="handleContactSubmit(event)" class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label id="lblContactName" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your Name</label>
+            <input type="text" id="contactName" required placeholder="e.g. Rahul Verma" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label id="lblContactEmail" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your Email</label>
+            <input type="email" id="contactEmail" required placeholder="e.g. rahul@gmail.com" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+        <div>
+          <label id="lblContactSub" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Subject</label>
+          <input type="text" id="contactSubject" placeholder="e.g. Hosting clothes drive in Vasai West" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div>
+          <label id="lblContactMsg" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Message</label>
+          <textarea id="contactMessage" rows="4" required placeholder="Write your query or proposal..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        </div>
+        <button type="submit" id="btnContactSubmit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl transition shadow-md cursor-pointer text-sm">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 text-xs">
+    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-emerald-500 flex items-center justify-center text-white font-bold">❤️</div>
+          <span class="text-base font-extrabold text-white" id="txtFootLogo">Helping Hand</span>
+        </div>
+        <p class="leading-relaxed" id="txtFootDesc">Connecting Vasai, Virar & Nalasopara citizens to share books, clothes, and foster education.</p>
+      </div>
+      <div>
+        <h5 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px]" id="txtFootHead1">Quick Links</h5>
+        <ul class="space-y-2">
+          <li><a href="#home" class="hover:text-white transition" id="ftLink1">Home</a></li>
+          <li><a href="#features" class="hover:text-white transition" id="ftLink2">Donate Books & Clothes</a></li>
+          <li><a href="#nearby" class="hover:text-white transition" id="ftLink3">Borrow Books</a></li>
+          <li><a href="#volunteers" class="hover:text-white transition" id="ftLink4">Volunteer Registration</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px]" id="txtFootHead2">Coverage Areas</h5>
+        <ul class="space-y-2">
+          <li id="ftArea1">Vasai West & East</li>
+          <li id="ftArea2">Virar West & East</li>
+          <li id="ftArea3">Nalasopara West & East</li>
+          <li id="ftArea4">Greater Mumbai Region</li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px]" id="txtFootHead3">Helpline & Support</h5>
+        <p class="mb-2" id="ftHelp1">Vasai Center: +91 98765 43210</p>
+        <p id="ftHelp2">Email: support@helpinghand-vasai.org</p>
+      </div>
+    </div>
+    <div class="container mx-auto px-4 pt-6 border-t border-slate-800 text-center text-slate-500" id="txtCopyRight">
+      &copy; 2026 Helping Hand Vasai Community Platform. All rights reserved. Powered by Backend Database API.
+    </div>
+  </footer>
+
+  <!-- ================= MODALS & DRAWERS ================= -->
+
+  <!-- LIST ITEM / DONATE MODAL -->
+  <div id="listModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeListModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      
+      <h3 id="listModalTitle" class="text-xl font-extrabold text-slate-900 dark:text-white mb-1">List an Item for Donation</h3>
+      <p id="listModalSub" class="text-xs text-slate-500 dark:text-slate-400 mb-5">Your item will be logged in the database and visible to neighbors nearby.</p>
+
+      <form onsubmit="handleListItemSubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label id="lblItemCat" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Category</label>
+          <select id="itemCategory" onchange="updateModalCategoryFields(this.value)" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="Book" id="optCatBook">📚 Book (Textbook / Reference)</option>
+            <option value="Clothes" id="optCatClothes">👕 Clothes (Uniform / Winterwear)</option>
+          </select>
+        </div>
+
+        <div>
+          <label id="lblItemTitle" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Item Title</label>
+          <input type="text" id="itemTitle" required placeholder="e.g. NCERT Science Class 9 or Woolen Sweater" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <!-- IMAGE UPLOAD / DONATE PHOTO SECTION -->
+        <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+          <label id="lblItemImage" class="block font-bold text-slate-800 dark:text-slate-200">Donate Item Photo / Image</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-500 mb-1" id="lblImgOptA">Option A: Upload Image File</label>
+              <input type="file" id="itemImageFile" accept="image/*" onchange="previewDonatedImage(event)" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-sky-100 file:text-sky-700 dark:file:bg-slate-700 dark:file:text-slate-200 cursor-pointer" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-500 mb-1" id="lblImgOptB">Option B: Image Web URL</label>
+              <input type="url" id="itemImageUrl" oninput="previewDonatedImageUrl(this.value)" placeholder="https://example.com/photo.jpg" class="w-full px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 text-[11px]" />
+            </div>
+          </div>
+
+          <!-- Image Live Preview Box -->
+          <div id="imgPreviewBox" class="hidden relative h-32 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+            <img id="imgPreviewTag" src="" class="w-full h-full object-cover" />
+            <button type="button" onclick="clearDonatedImagePreview()" class="absolute top-2 right-2 bg-slate-900/80 hover:bg-slate-900 text-white rounded-lg px-2 py-1 text-[10px] font-bold shadow-md cursor-pointer">
+              ✕ Clear Photo
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label id="lblAuthorAge" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Author</label>
+            <input type="text" id="itemAuthorAge" placeholder="e.g. R.D. Sharma" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label id="lblClassGender" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Class / Grade</label>
+            <input type="text" id="itemClassGender" placeholder="e.g. Class 10" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label id="lblItemLoc" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Location Area</label>
+            <select id="itemLocation" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="Vasai West">Vasai West</option>
+              <option value="Vasai East">Vasai East</option>
+              <option value="Nalasopara West">Nalasopara West</option>
+              <option value="Nalasopara East">Nalasopara East</option>
+              <option value="Virar West">Virar West</option>
+              <option value="Virar East">Virar East</option>
+              <option value="Mumbai Central">Mumbai Central</option>
+            </select>
+          </div>
+          <div>
+            <label id="lblItemCond" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Condition</label>
+            <select id="itemCondition" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="Like New" id="optCondNew">Like New</option>
+              <option value="Good (90%)" id="optCondGood">Good (90%)</option>
+              <option value="Fair" id="optCondFair">Fair</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label id="lblDonorName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Donor Name</label>
+            <input type="text" id="itemDonorName" required placeholder="Your full name" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label id="lblDonorPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone Number</label>
+            <input type="tel" id="itemDonorPhone" required placeholder="+91 98765 43210" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+
+        <div>
+          <label id="lblItemDesc" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Short Description</label>
+          <textarea id="itemDescription" rows="2" placeholder="Mention edition, subjects covered, or pickup instructions..." class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        </div>
+
+        <button type="submit" id="btnSaveItemDb" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer text-sm mt-2">
+          Save Item to Database
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- BORROW / PICKUP REQUEST MODAL -->
+  <div id="borrowModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeBorrowModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-sky-100 dark:bg-sky-950 text-sky-600 rounded-xl flex items-center justify-center font-bold text-xl mb-3">
+        <i data-lucide="book-open" class="w-6 h-6"></i>
+      </div>
+
+      <h3 id="txtBorrowModalTitle" class="text-xl font-extrabold text-slate-900 dark:text-white mb-1">Request Book Pickup</h3>
+      <p id="borrowItemSubtitle" class="text-xs text-slate-500 dark:text-slate-400 mb-4">Requesting: Mathematics Class 10</p>
+
+      <form onsubmit="handleBorrowSubmit(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="borrowItemId" />
+        <input type="hidden" id="borrowItemTitle" />
+
+        <div>
+          <label id="lblBorrowName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Your Full Name</label>
+          <input type="text" id="borrowName" required placeholder="e.g. Sameer Khan" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <div>
+          <label id="lblBorrowPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone Number</label>
+          <input type="tel" id="borrowPhone" required placeholder="+91 98000 00000" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <div>
+          <label id="lblBorrowAddress" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Pickup Address / Area in Vasai</label>
+          <input type="text" id="borrowAddress" placeholder="e.g. Near Station Road, Vasai West" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <div>
+          <label id="lblBorrowNotes" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Notes for Donor</label>
+          <textarea id="borrowNotes" rows="2" placeholder="e.g. Available after 5 PM for pickup" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        </div>
+
+        <button type="submit" id="btnSubmitPickupReq" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer text-sm mt-2">
+          Submit Pickup Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- VOLUNTEER REGISTRATION MODAL -->
+  <div id="volunteerModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeVolunteerModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-purple-100 dark:bg-purple-950 text-purple-600 rounded-xl flex items-center justify-center font-bold text-xl mb-3">
+        🙋
+      </div>
+
+      <h3 id="txtVolModalTitle" class="text-xl font-extrabold text-slate-900 dark:text-white mb-1">Join as a Volunteer</h3>
+      <p id="txtVolModalSub" class="text-xs text-slate-500 dark:text-slate-400 mb-4">Register in our Vasai community database to receive drive updates.</p>
+
+      <form onsubmit="handleVolunteerSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label id="lblVolName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Full Name</label>
+          <input type="text" id="volName" required placeholder="e.g. Aarav Mehta" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label id="lblVolEmail" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Email</label>
+            <input type="email" id="volEmail" required placeholder="aarav@gmail.com" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label id="lblVolPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone</label>
+            <input type="tel" id="volPhone" required placeholder="+91 98111 22334" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label id="lblVolLoc" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Location</label>
+            <select id="volLocation" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="Vasai West">Vasai West</option>
+              <option value="Vasai East">Vasai East</option>
+              <option value="Virar West">Virar West</option>
+              <option value="Virar East">Virar East</option>
+              <option value="Nalasopara">Nalasopara</option>
+            </select>
+          </div>
+          <div>
+            <label id="lblVolRole" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Preferred Role</label>
+            <select id="volRole" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="Teaching Drive">Teaching Drive</option>
+              <option value="Book Sorting">Book Sorting</option>
+              <option value="Clothes Distribution">Clothes Distribution</option>
+              <option value="Community Outreach">Community Outreach</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label id="lblVolAvail" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Availability</label>
+          <select id="volAvailability" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="Weekends">Weekends (Sat & Sun)</option>
+            <option value="Weekdays">Weekdays</option>
+            <option value="Any time">Flexible / Any time</option>
+          </select>
+        </div>
+
+        <button type="submit" id="btnRegVolProf" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer text-sm mt-2">
+          Register Volunteer Profile
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MONETARY DONATE MODAL -->
+  <div id="donateModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closeDonateModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950 text-emerald-600 rounded-xl flex items-center justify-center font-bold text-xl mb-3">
+        ❤️
+      </div>
+
+      <h3 id="txtDonateModalTitle" class="text-xl font-extrabold text-slate-900 dark:text-white mb-1">Make a Financial Contribution</h3>
+      <p id="txtDonateModalSub" class="text-xs text-slate-500 dark:text-slate-400 mb-4">Funds directly support purchasing notebooks, stationery, and winter blankets for children.</p>
+
+      <form onsubmit="handleDonateSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label id="lblDonateAmt" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Select Amount (₹)</label>
+          <div class="grid grid-cols-4 gap-2">
+            <button type="button" onclick="setDonateAmount(200)" class="donate-amt-btn px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 font-bold hover:bg-emerald-50 text-center cursor-pointer">₹200</button>
+            <button type="button" onclick="setDonateAmount(500)" class="donate-amt-btn px-3 py-2 rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950 text-emerald-600 font-bold text-center cursor-pointer">₹500</button>
+            <button type="button" onclick="setDonateAmount(1000)" class="donate-amt-btn px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 font-bold hover:bg-emerald-50 text-center cursor-pointer">₹1000</button>
+            <button type="button" onclick="setDonateAmount(2500)" class="donate-amt-btn px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 font-bold hover:bg-emerald-50 text-center cursor-pointer">₹2500</button>
+          </div>
+          <input type="number" id="customDonateAmount" value="500" class="mt-2 w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+
+        <div>
+          <label id="lblDonorFinName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Donor Name</label>
+          <input type="text" id="donorName" required placeholder="e.g. Ananya Roy" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+
+        <div>
+          <label id="lblDonorFinEmail" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Email Address</label>
+          <input type="email" id="donorEmail" required placeholder="ananya@gmail.com" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+        </div>
+
+        <button type="submit" id="btnPayUpiCard" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md transition cursor-pointer text-sm mt-2">
+          Proceed to Pay via UPI / Card
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN PORTAL MODAL -->
+  <div id="adminModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-4xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeAdminModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-full cursor-pointer">
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-xl flex items-center justify-center font-bold text-xl">
+          <i data-lucide="shield" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 id="txtAdminModalTitle" class="text-2xl font-extrabold text-slate-900 dark:text-white">Admin Database Dashboard</h3>
+          <p id="txtAdminModalSub" class="text-xs text-slate-500 dark:text-slate-400">Direct interface to SQLite database tables: Items, Volunteers, and Requests.</p>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 mb-6 text-xs font-bold">
+        <button id="adminTabItems" onclick="switchAdminTab('items')" class="px-4 py-2 border-b-2 border-emerald-600 text-emerald-600 cursor-pointer">Database Items (<span id="cntAdminItems">0</span>)</button>
+        <button id="adminTabVolunteers" onclick="switchAdminTab('volunteers')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-900 cursor-pointer">Volunteers (<span id="cntAdminVolunteers">0</span>)</button>
+        <button id="adminTabBorrow" onclick="switchAdminTab('borrow')" class="px-4 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-900 cursor-pointer">Pickup Requests (<span id="cntAdminBorrow">0</span>)</button>
+      </div>
+
+      <!-- Admin Content View -->
+      <div id="adminTabContent" class="overflow-x-auto">
+        <!-- Rendered via app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- WISHLIST DRAWER -->
+  <div id="wishlistDrawer" class="fixed inset-y-0 right-0 w-80 sm:w-96 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="bookmark" class="w-5 h-5 text-emerald-600"></i>
+        <h4 id="txtWishlistDrawerTitle" class="font-extrabold text-base text-slate-900 dark:text-white">Saved Wishlist</h4>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="clearAllWishlist()" class="text-[11px] text-rose-500 hover:text-rose-700 font-semibold px-2 py-1 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/50 transition cursor-pointer" title="Clear all saved items">Clear All</button>
+        <button onclick="toggleWishlistDrawer()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="wishlistItemsList" class="p-4 overflow-y-auto flex-1 space-y-3">
+      <!-- Dynamically filled -->
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS DRAWER -->
+  <div id="notificationsDrawer" class="fixed inset-y-0 right-0 w-80 sm:w-96 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="bell" class="w-5 h-5 text-orange-500"></i>
+        <h4 id="txtNotifDrawerTitle" class="font-extrabold text-base text-slate-900 dark:text-white">Live Activity Feed</h4>
+      </div>
+      <button onclick="toggleNotificationsDrawer()" class="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <div id="notificationsFeedList" class="p-4 overflow-y-auto flex-1 space-y-3">
+      <!-- Dynamically filled -->
+    </div>
+  </div>
+
+  <!-- ITEM DETAILS MODAL WITH PROMINENT TOP & BOTTOM CLOSE BUTTONS -->
+  <div id="itemDetailsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      
+      <!-- Top Close Button -->
+      <button onclick="closeItemDetailsModal()" class="absolute top-4 right-4 p-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-full shadow-md z-20 cursor-pointer transition hover:scale-110" title="Close Details Modal">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      
+      <div id="itemDetailsContent">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 text-xs font-semibold">
+    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
+    <span id="toastMsg">Action completed successfully!</span>
+  </div>
+
+  <!-- JavaScript App Logic -->
+  <script src="app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
