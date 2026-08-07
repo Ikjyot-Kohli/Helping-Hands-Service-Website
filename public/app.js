@@ -23,7 +23,7 @@ const i18n = {
     navAbout: "About",
     navContact: "Contact",
     txtAdminBtn: "Admin Portal",
-    
+
     // Hero
     tagline: "Vasai • Virar • Nalasopara • Mumbai Community",
     heroTitle: "Together We Can Build a <span class='bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-600 bg-clip-text text-transparent'>Better Future.</span>",
@@ -102,6 +102,25 @@ const i18n = {
     btnVolBannerDon: "Make a Contribution",
     volRosterTitle: "Recent Active Volunteers",
 
+    // Community Gallery Section
+    galleryTitle: "Community Gallery",
+    galleryDesc: "AI-powered learning sessions and volunteer drives across Vasai West & East.",
+    gallery1: "Happy Students in Vasai Center",
+    gallery2: "Interactive Reading Session",
+    gallery3: "Volunteer Sorting Clothes",
+    gallery4: "Book Distribution Drive",
+    gallery5: "Community Learning Circle",
+    gallery6: "Warm Winter Wear Drive",
+
+    // Education Mission Section
+    missionTagline: "Our Core Mission",
+    missionTitle: "Making Education Accessible to Every Child in Vasai",
+    missionDesc: "Helping Hand is built on the belief that geography or financial status should never be a barrier to learning. By connecting generous donors directly with families and children in need within our local neighborhood, we ensure every book finds an eager reader and every warm garment brings comfort.",
+    missionBox1Title: "Zero Middlemen",
+    missionBox2Title: "Verified Pickups",
+    missionBox3Title: "Vasai & Suburbs Focus",
+    missionBox4Title: "Free Book Lending",
+
     // About Section
     aboutTitle: "About Helping Hand Platform",
     aboutDesc: "Helping Hand is a community-driven initiative dedicated to bridging the educational and welfare gap for underprivileged children in Vasai, Virar, Nalasopara, and Mumbai. We enable citizens to directly share textbooks, educational reference materials, and essential clothing with nearby families in need.",
@@ -158,7 +177,7 @@ const i18n = {
     lblDonorPhone: "Phone Number",
     lblItemDesc: "Short Description",
     btnSaveItemDb: "Save Item to Database",
-    
+
     borrowModalTitle: "Request Book Pickup",
     lblBorrowName: "Your Full Name",
     lblBorrowPhone: "Phone Number",
@@ -280,7 +299,27 @@ const i18n = {
     btnVolBannerDon: "आर्थिक योगदान दें",
     volRosterTitle: "हाल के सक्रिय स्वयंसेवक",
 
+    // Community Gallery Section
+    galleryTitle: "सामुदायिक गैलरी",
+    galleryDesc: "वसई पश्चिम और पूर्व में AI आधारित शिक्षण सत्र और स्वयंसेवी अभियान।",
+    gallery1: "वसई केंद्र में खुश बच्चे",
+    gallery2: "इंटरैक्टिव रीडिंग सत्र",
+    gallery3: "स्वयंसेवकों द्वारा कपड़ों की छंटाई",
+    gallery4: "पुस्तक वितरण अभियान",
+    gallery5: "सामुदायिक शिक्षण समूह",
+    gallery6: "गर्म सर्दियों के कपड़ों का अभियान",
+
+    // Education Mission Section
+    missionTagline: "हमारा मुख्य मिशन",
+    missionTitle: "वसई में हर बच्चे तक शिक्षा पहुँचाना",
+    missionDesc: "हेल्पिंग हैंड इस सोच पर बना है कि जगह या आर्थिक स्थिति कभी भी सीखने में रुकावट नहीं बननी चाहिए। अपने आस-पास के ज़रूरतमंद परिवारों और बच्चों को उदार दानदाताओं से सीधे जोड़कर, हम यह सुनिश्चित करते हैं कि हर किताब को एक उत्सुक पाठक मिले और हर गर्म कपड़े से किसी को आराम मिले।",
+    missionBox1Title: "कोई बिचौलिया नहीं",
+    missionBox2Title: "सत्यापित पिकअप",
+    missionBox3Title: "वसई और आसपास के क्षेत्रों पर फोकस",
+    missionBox4Title: "मुफ्त किताब उधार",
+
     // About Section
+    tagline: "हमारा मुख्य मिशन",
     aboutTitle: "हेल्पिंग हैंड प्लेटफॉर्म के बारे में",
     aboutDesc: "हेल्पिंग हैंड वसई, विरार, नालासोपारा और मुंबई में वंचित बच्चों के लिए शैक्षिक सहायता प्रदान करने की एक पहल है। नागरिक सीधे जरूरतमंद परिवारों के साथ पुस्तकें और कपड़े साझा कर सकते हैं।",
     aboutBox1Title: "प्रत्यक्ष संपर्क",
@@ -458,6 +497,25 @@ const i18n = {
     btnVolBannerDon: "आर्थिक मदत करा",
     volRosterTitle: "अलीकडील सक्रिय स्वयंसेवक",
 
+    // Community Gallery Section
+    galleryTitle: "सामुदायिक दालन",
+    galleryDesc: "वसई पश्चिम आणि पूर्व भागात AI तंत्रज्ञानावर आधारित शिक्षण सत्रे आणि स्वयंसेवा उपक्रम.",
+    gallery1: "वसई केंद्रातील आनंदी विद्यार्थी",
+    gallery2: "परस्परसंवादी वाचन सत्र",
+    gallery3: "स्वयंसेवकांकडून कपड्यांची वर्गवारी",
+    gallery4: "पुस्तक वितरण मोहीम",
+    gallery5: "सामुदायिक शिक्षण गट",
+    gallery6: "उबदार हिवाळी कपड्यांची मोहीम",
+
+    // Education Mission Section
+    missionTagline: "आमचे मुख्य ध्येय",
+    missionTitle: "वसईतील प्रत्येक मुलापर्यंत शिक्षण पोहोचवणे",
+    missionDesc: "'हेल्पिंग हँड' या विश्वासावर आधारित आहे की भौगोलिक स्थान किंवा आर्थिक परिस्थिती ही शिक्षणाच्या मार्गातील अडथळा कधीच ठरू नये. आपल्या परिसरातील गरजू कुटुंबे आणि मुलांना थेट देणगीदारांशी जोडून, आम्ही हे सुनिश्चित करतो की प्रत्येक पुस्तकाला उत्सुक वाचक मिळावा आणि प्रत्येक उबदार कपड्यामुळे कोणालातरी दिलासा मिळावा.",
+    missionBox1Title: "मध्यस्थांचा अभाव",
+    missionBox2Title: "खात्रीशीर संकलन",
+    missionBox3Title: "वसई आणि उपनगरांवर लक्ष",
+    missionBox4Title: "मोफत पुस्तक वाटप",
+
     // About Section
     aboutTitle: "हेल्पिंग हँड प्लॅटफॉर्मबद्दल",
     aboutDesc: "हेल्पिंग हँड ही वसई, विरार, नालासोपारा आणि मुंबईतील गरजू मुलांच्या शिक्षणासाठी सुरू केलेली मोहीम आहे. नागरिक थेट पुस्तके आणि कपडे शेअर करू शकतात.",
@@ -551,11 +609,11 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTheme();
   setupScrollSpy();
   setupModalBackdropListeners();
-  
+
   // Set initial language dropdown value
   const langSelect = document.getElementById('langSelect');
   if (langSelect) langSelect.value = currentLang;
-  
+
   // Apply language immediately
   changeLanguage(currentLang, false);
 
@@ -667,7 +725,7 @@ function changeLanguage(lang, notify = true) {
   setText('btnBannerDonate', dict.btnBannerDonate);
   setText('txtLogoName', dict.logoName);
   setText('txtLogoSub', dict.logoSub);
-  
+
   setText('nav-home', dict.navHome);
   setText('nav-features', dict.navDonate);
   setText('nav-nearby', dict.navBorrow);
@@ -703,7 +761,7 @@ function changeLanguage(lang, notify = true) {
   // 3. Search & Filter
   const searchInput = document.getElementById('searchInput');
   if (searchInput) searchInput.placeholder = dict.searchPlaceholder;
-  
+
   setText('optLocAll', dict.optLocAll);
   setText('optLocVasai', dict.optLocVasai);
   setText('optLocNala', dict.optLocNala);
@@ -750,7 +808,26 @@ function changeLanguage(lang, notify = true) {
   setText('btnVolBannerDon', dict.btnVolBannerDon);
   setText('txtVolRosterTitle', dict.volRosterTitle);
 
-  // 7. About Section
+  // 7. Community Gallery Section
+  setText('txtGalleryTitle', dict.galleryTitle);
+  setText('txtGalleryDesc', dict.galleryDesc);
+  setText('gallery1', dict.gallery1);
+  setText('gallery2', dict.gallery2);
+  setText('gallery3', dict.gallery3);
+  setText('gallery4', dict.gallery4);
+  setText('gallery5', dict.gallery5);
+  setText('gallery6', dict.gallery6);
+
+  //8. Education Mission Section
+  setText('txtMissionTagline', dict.missionTagline);
+  setText('txtMissionTitle', dict.missionTitle);
+  setText('txtMissionDesc', dict.missionDesc);
+  setText('txtMissionBox1Title', dict.missionBox1Title);
+  setText('txtMissionBox2Title', dict.missionBox2Title);
+  setText('txtMissionBox3Title', dict.missionBox3Title);
+  setText('txtMissionBox4Title', dict.missionBox4Title);
+
+  // 9. About Section
   setText('txtAboutTitle', dict.aboutTitle);
   setText('txtAboutDesc', dict.aboutDesc);
   setText('txtAboutBox1Title', dict.aboutBox1Title);
@@ -760,7 +837,7 @@ function changeLanguage(lang, notify = true) {
   setText('txtAboutBox3Title', dict.aboutBox3Title);
   setText('txtAboutBox3Sub', dict.aboutBox3Sub);
 
-  // 8. Contact Section
+  // 10. Contact Section
   setText('txtContactTitle', dict.contactTitle);
   setText('txtContactSubtitle', dict.contactSubtitle);
   setText('lblContactName', dict.lblContactName);
@@ -769,7 +846,7 @@ function changeLanguage(lang, notify = true) {
   setText('lblContactMsg', dict.lblContactMsg);
   setText('btnContactSubmit', dict.btnContactSubmit);
 
-  // 9. Footer
+  // 11. Footer
   setText('txtFootLogo', dict.footLogo);
   setText('txtFootDesc', dict.footDesc);
   setText('txtFootHead1', dict.footHead1);
@@ -787,7 +864,7 @@ function changeLanguage(lang, notify = true) {
   setText('ftHelp2', dict.ftHelp2);
   setText('txtCopyRight', dict.copyRight);
 
-  // 10. Modals
+  // 12. Modals
   setText('listModalTitle', dict.listModalTitle);
   setText('listModalSub', dict.listModalSub);
   setText('lblItemCat', dict.lblItemCat);
@@ -920,7 +997,7 @@ async function fetchItems() {
 function renderItemCard(item) {
   const dict = i18n[currentLang] || i18n.en;
   const isWishlisted = wishlist.includes(item.id);
-  
+
   // Status translation
   let statusText = item.status;
   if (item.status === 'Available') statusText = dict.statusAvailable;
@@ -929,7 +1006,7 @@ function renderItemCard(item) {
 
   const statusColor = item.status === 'Available' ? 'bg-emerald-600' : item.status === 'Reserved' ? 'bg-orange-500' : 'bg-slate-600';
   const categoryBadge = item.category === 'Book' ? '📚 ' + (currentLang === 'hi' ? 'पुस्तक' : currentLang === 'mr' ? 'पुस्तक' : 'Book') : '👕 ' + (currentLang === 'hi' ? 'कपड़े' : currentLang === 'mr' ? 'कपडे' : 'Clothes');
-  
+
   const labelKey1 = item.category === 'Book' ? dict.cardAuthor : dict.cardAge;
   const labelKey2 = item.category === 'Book' ? dict.cardClass : dict.cardGender;
 
@@ -1089,10 +1166,10 @@ function updateModalCategoryFields(cat) {
 
 async function handleListItemSubmit(e) {
   e.preventDefault();
-  
+
   const categoryVal = document.getElementById('itemCategory').value;
   const urlInputVal = document.getElementById('itemImageUrl').value.trim();
-  const finalImageUrl = selectedDonatedImageDataUrl || urlInputVal || (categoryVal === 'Book' 
+  const finalImageUrl = selectedDonatedImageDataUrl || urlInputVal || (categoryVal === 'Book'
     ? 'https://images.unsplash.com/photo-1599689868384-59cb2b01bb21?auto=format&fit=crop&w=600&q=80'
     : 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80');
 

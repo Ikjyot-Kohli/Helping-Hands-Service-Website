@@ -10,6 +10,11 @@ body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+html[lang="hi"],
+html[lang="mr"] {
+  font-family: "Noto Sans Devanagari", "Plus Jakarta Sans", sans-serif;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
