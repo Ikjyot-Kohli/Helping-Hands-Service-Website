@@ -2266,3 +2266,121 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+// =========================================================
+// GLOBAL FORM INPUT VALIDATION
+// =========================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Phone fields: numbers only
+  const phoneFields = [
+    'itemDonorPhone',
+    'borrowPhone',
+    'volPhone'
+  ];
+
+  phoneFields.forEach((id) => {
+    const input = document.getElementById(id);
+
+    if (!input) return;
+
+    input.addEventListener('input', () => {
+      input.value = input.value
+        .replace(/\D/g, '')
+        .slice(0, 10);
+    });
+
+    input.addEventListener('blur', () => {
+      if (input.value.length !== 10) {
+        input.setCustomValidity(
+          'Phone number must contain exactly 10 digits.'
+        );
+      } else {
+        input.setCustomValidity('');
+      }
+    });
+  });
+
+
+  // Name fields
+  const nameFields = [
+    'itemDonorName',
+    'borrowName',
+    'volName',
+    'donorName'
+  ];
+
+  nameFields.forEach((id) => {
+    const input = document.getElementById(id);
+
+    if (!input) return;
+
+    input.addEventListener('input', () => {
+
+      // Remove numbers and special characters
+      input.value = input.value.replace(
+        /[^A-Za-zÀ-ÖØ-öø-ÿ\u0900-\u097F .'-]/g,
+        ''
+      );
+
+      // Remove extra spaces
+      input.value = input.value.replace(/\s+/g, ' ');
+
+      // Capitalize each word
+      input.value = input.value
+        .toLowerCase()
+        .replace(/\b\w/g, char => char.toUpperCase());
+    });
+
+    input.addEventListener('blur', () => {
+
+      const nameRegex =
+        /^[A-Za-zÀ-ÖØ-öø-ÿ\u0900-\u097F]+(?:[ .'-][A-Za-zÀ-ÖØ-öø-ÿ\u0900-\u097F]+)*$/;
+
+      if (!nameRegex.test(input.value.trim())) {
+        input.setCustomValidity(
+          'Please enter a valid name using letters only.'
+        );
+      } else {
+        input.setCustomValidity('');
+      }
+
+    });
+  });
+
+
+  // Email fields
+  const emailFields = [
+    'volEmail',
+    'donorEmail'
+  ];
+
+  emailFields.forEach((id) => {
+
+    const input = document.getElementById(id);
+
+    if (!input) return;
+
+    input.addEventListener('input', () => {
+      input.value = input.value.trim();
+    });
+
+    input.addEventListener('blur', () => {
+
+      const emailRegex =
+        /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+      if (!emailRegex.test(input.value.trim())) {
+        input.setCustomValidity(
+          'Please enter a valid email address.'
+        );
+      } else {
+        input.setCustomValidity('');
+      }
+
+    });
+
+  });
+
+});

@@ -166,13 +166,13 @@ app.post('/api/items', async (req, res) => {
       });
     }
 
-    if (!properName(donor_name)) {
+    if (!validName(donor_name)) {
       return res.status(400).json({
         error: 'Invalid donor name.'
       });
     }
 
-    if ((donor_phone)) {
+    if (!validPhone(donor_phone)) {
       return res.status(400).json({
         error: 'Phone number must contain exactly 10 digits.'
       });
@@ -191,17 +191,18 @@ app.post('/api/items', async (req, res) => {
       `INSERT INTO items (title, category, sub_category, location, distance, status, author_or_age, class_or_gender, condition, donor_name, donor_phone, description, image_url)
        VALUES (?, ?, ?, ?, ?, 'Available', ?, ?, ?, ?, ?, ?, ?)`,
       [
-        title,
+        cleanServerText(title),
         category,
         sub_category || (category === 'Book' ? 'Textbook' : 'Casual Wear'),
-        location,
+        cleanServerText(location),
         distance || '1.0 km',
-        author_or_age || 'N/A',
-        class_or_gender || 'General',
+        cleanServerText(author_or_age || 'N/A'),
+        cleanServerText(class_or_gender || 'General'),
         condition || 'Good',
-        donor_name,
-        donor_phone || '+91 98000 00000',
-        description || 'Donated with love for the Vasai community.',
+        properName(donor_name),
+        cleanServerText(donor_phone),
+        cleanServerText(
+          description || 'Donated with love for the Vasai community.'),
         image_url || defaultImg
       ]
     );
@@ -278,15 +279,24 @@ app.post('/api/volunteers', async (req, res) => {
     [
       properName(name),
       cleanServerText(email).toLowerCase(),
-      phone,
-      location,
-      role || 'Teaching Driver',
+      cleanServerText(phone),
+      cleanServerText(location),
+      role || 'Teaching Drive',
       availability || 'Weekends'
     ]
 
     const result = await run(
-      `INSERT INTO volunteers (name, email, phone, location, role, availability, status) VALUES (?, ?, ?, ?, ?, ?, 'Active')`,
-      [name, email, phone, location, role || 'Teaching Drive', availability || 'Weekends']
+      `INSERT INTO volunteers
+  (name, email, phone, location, role, availability, status)
+  VALUES (?, ?, ?, ?, ?, ?, 'Active')`,
+      [
+        properName(name),
+        cleanServerText(email).toLowerCase(),
+        cleanServerText(phone),
+        cleanServerText(location),
+        role || 'Teaching Drive',
+        availability || 'Weekends'
+      ]
     );
 
     const newVol = await get('SELECT * FROM volunteers WHERE id = ?', [result.id]);
@@ -351,89 +361,138 @@ app.post('/api/borrow', async (req, res) => {
   }
 });
 
-// API: Monetary Donations
+// =========================================================
+// API: MONETARY DONATIONS
+// =========================================================
 
-if (!donor_name || !email || !amount) {
-  return res.status(400).json({
-    error: 'Donor name, email and amount are required.'
-  });
-}
-
-if (!validName(donor_name)) {
-  return res.status(400).json({
-    error: 'Please enter a valid donor name.'
-  });
-}
-
-if (!validEmail(email)) {
-  return res.status(400).json({
-    error: 'Please enter a valid email address.'
-  });
-}
-
-const donationAmount = Number(amount);
-
-if (!Number.isFinite(donationAmount) || donationAmount <= 0) {
-  return res.status(400).json({
-    error: 'Please enter a valid donation amount.'
-  });
-}
-
-/*app.post('/api/donations', async (req, res) => {
+app.post('/api/donations', async (req, res) => {
   try {
-    const { donor_name, email, amount, cause } = req.body;
+    const {
+      donor_name,
+      email,
+      amount,
+      cause
+    } = req.body;
+
+    if (!donor_name || !email || !amount) {
+      return res.status(400).json({
+        error: 'Donor name, email and amount are required.'
+      });
+    }
+
+    if (!validName(donor_name)) {
+      return res.status(400).json({
+        error: 'Please enter a valid donor name.'
+      });
+    }
+
+    if (!validEmail(email)) {
+      return res.status(400).json({
+        error: 'Please enter a valid email address.'
+      });
+    }
+
+    const donationAmount = Number(amount);
+
+    if (!Number.isFinite(donationAmount) || donationAmount <= 0) {
+      return res.status(400).json({
+        error: 'Please enter a valid donation amount.'
+      });
+    }
+
     const result = await run(
-      `INSERT INTO monetary_donations (donor_name, email, amount, cause) VALUES (?, ?, ?, ?)`,
-      [donor_name || 'Anonymous', email || 'donor@helpinghand.org', amount || 500, cause || 'Education & Clothes']
+      `INSERT INTO monetary_donations
+      (donor_name, email, amount, cause)
+      VALUES (?, ?, ?, ?)`,
+      [
+        properName(donor_name),
+        cleanServerText(email).toLowerCase(),
+        donationAmount,
+        cause || 'Education & Clothes'
+      ]
     );
-    res.status(201).json({ id: result.id, message: 'Thank you for your generous donation!' });
+
+    res.status(201).json({
+      id: result.id,
+      message: 'Thank you for your generous donation!'
+    });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Donation error:', err);
+
+    res.status(500).json({
+      error: 'Unable to process donation.'
+    });
   }
-});*/
+});
 
-// API: Contact Form
 
-if (!name || !email || !message) {
-  return res.status(400).json({
-    error: 'Name, email and message are required.'
-  });
-}
-
-if (!validName(name)) {
-  return res.status(400).json({
-    error: 'Please enter a valid name.'
-  });
-}
-
-if (!validEmail(email)) {
-  return res.status(400).json({
-    error: 'Please enter a valid email address.'
-  });
-}
-
-if (!validText(message, 5)) {
-  return res.status(400).json({
-    error: 'Please enter a meaningful message.'
-  });
-}
-
-if (subject && !validText(subject, 3)) {
-  return res.status(400).json({
-    error: 'Please enter a valid subject.'
-  });
-}
+// =========================================================
+// API: CONTACT FORM
+// =========================================================
 
 app.post('/api/contact', async (req, res) => {
   try {
-    const { name, email, subject, message } = req.body;
+    const {
+      name,
+      email,
+      subject,
+      message
+    } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        error: 'Name, email and message are required.'
+      });
+    }
+
+    if (!validName(name)) {
+      return res.status(400).json({
+        error: 'Please enter a valid name.'
+      });
+    }
+
+    if (!validEmail(email)) {
+      return res.status(400).json({
+        error: 'Please enter a valid email address.'
+      });
+    }
+
+    if (!validText(message, 5)) {
+      return res.status(400).json({
+        error: 'Please enter a meaningful message.'
+      });
+    }
+
+    if (subject && !validText(subject, 3)) {
+      return res.status(400).json({
+        error: 'Please enter a valid subject.'
+      });
+    }
+
     const result = await run(
-      `INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)`,
-      [name, email, subject || 'General Query', message]
+      `INSERT INTO contact_messages
+      (name, email, subject, message)
+      VALUES (?, ?, ?, ?)`,
+      [
+        properName(name),
+        cleanServerText(email).toLowerCase(),
+        subject ? cleanServerText(subject) : 'General Query',
+        cleanServerText(message)
+      ]
     );
-    res.status(201).json({ id: result.id, message: 'Your message has been sent successfully!' });
+
+    res.status(201).json({
+      id: result.id,
+      message: 'Your message has been sent successfully!'
+    });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Contact form error:', err);
+
+    res.status(500).json({
+      error: 'Unable to send your message.'
+    });
   }
 });
 
@@ -449,8 +508,5 @@ app.get('/api/notifications', async (req, res) => {
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`Helping Hand Service Website is running live on:`);
-  console.log(`👉 http://localhost:${PORT}`);
-  console.log(`====================================================`);
+  console.log(`Helping Hands server running at http://localhost:${PORT}`);
 });

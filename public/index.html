@@ -692,26 +692,26 @@
           <div>
             <label id="lblContactName" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your
               Name</label>
-            <input type="text" id="contactName" required placeholder="e.g. Rahul Verma"
+            <input type="text" id="contactName" required placeholder="Your Full Name"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
           <div>
             <label id="lblContactEmail" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your
               Email</label>
-            <input type="email" id="contactEmail" required placeholder="e.g. rahul@gmail.com"
+            <input type="email" id="contactEmail" required placeholder="your@gmail.com"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
         </div>
         <div>
           <label id="lblContactSub"
             class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Subject</label>
-          <input type="text" id="contactSubject" placeholder="e.g. Hosting clothes drive in Vasai West"
+          <input type="text" id="contactSubject" required placeholder="Subject"
             class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
         <div>
           <label id="lblContactMsg"
             class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Message</label>
-          <textarea id="contactMessage" rows="4" required placeholder="Write your query or proposal..."
+          <textarea id="contactMessage" rows="4" required minlength="5" placeholder="Write your message..."
             class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
         </div>
         <button type="submit" id="btnContactSubmit"
@@ -997,8 +997,8 @@
           <div>
             <label id="lblVolPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone</label>
             <input type="tel" id="volPhone" required inputmode="numeric" maxlength="10" minlength="10"
-              pattern="[0-9]{10}" placeholder="9876543210" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300
-            dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              pattern="[0-9]{10}" placeholder="9876543210"
+              class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
         </div>
 
