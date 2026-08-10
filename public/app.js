@@ -1164,153 +1164,642 @@ function updateModalCategoryFields(cat) {
   document.getElementById('itemClassGender').placeholder = isBook ? 'e.g. Class 10' : 'e.g. Unisex / Boys';
 }
 
+/* =========================================================
+   FORM VALIDATION - HELPING HAND
+   ========================================================= */
+
+// ---------- VALIDATION REGEX ----------
+const VALIDATION = {
+  // Indian 10-digit phone number - numbers ONLY
+  phone: /^[0-9]{10}$/,
+
+  // Standard email validation
+  email: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+
+  // Names: letters, spaces, apostrophe, hyphen and dot
+  // Supports English + Indian Unicode characters
+  name: /^[\p{L}]+(?:[ .'-][\p{L}]+)*$/u
+};
+
+
+// ---------- CLEAN TEXT ----------
+function cleanText(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+
+// ---------- PROPER NAME FORMAT ----------
+// Example:
+// "rAHUL vERMA" -> "Rahul Verma"
+// "ikjyot kaur kohli" -> "Ikjyot Kaur Kohli"
+function formatProperName(value) {
+  return cleanText(value)
+    .toLowerCase()
+    .split(' ')
+    .map(word => {
+      if (!word) return word;
+
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
+
+
+// ---------- PHONE VALIDATION ----------
+function isValidPhone(value) {
+  return VALIDATION.phone.test(cleanText(value));
+}
+
+
+// ---------- EMAIL VALIDATION ----------
+function isValidEmail(value) {
+  return VALIDATION.email.test(cleanText(value));
+}
+
+
+// ---------- NAME VALIDATION ----------
+function isValidName(value) {
+  const name = cleanText(value);
+
+  if (!name) return false;
+
+  // Prevent names such as:
+  // 12345
+  // Rahul123
+  // 123Rahul
+  if (!VALIDATION.name.test(name)) {
+    return false;
+  }
+
+  // Name should contain at least 2 letters
+  const lettersOnly = name.replace(/[^\p{L}]/gu, '');
+
+  return lettersOnly.length >= 2;
+}
+
+
+// ---------- GENERAL TEXT VALIDATION ----------
+function isValidText(value, minLength = 2) {
+  const text = cleanText(value);
+
+  if (!text || text.length < minLength) {
+    return false;
+  }
+
+  // Reject text containing only numbers/symbols
+  const hasLetter = /\p{L}/u.test(text);
+
+  return hasLetter;
+}
+
+
+// ---------- SHOW VALIDATION ERROR ----------
+function setValidationError(input, message) {
+  if (!input) return;
+
+  input.setCustomValidity(message);
+
+  input.classList.add(
+    'border-red-500',
+    'ring-2',
+    'ring-red-200'
+  );
+}
+
+
+// ---------- CLEAR VALIDATION ERROR ----------
+function clearValidationError(input) {
+  if (!input) return;
+
+  input.setCustomValidity('');
+
+  input.classList.remove(
+    'border-red-500',
+    'ring-2',
+    'ring-red-200'
+  );
+}
+
+
+// =========================================================
+// PHONE INPUTS - ALLOW NUMBERS ONLY
+// =========================================================
+
+const phoneInputIds = [
+  'itemDonorPhone',
+  'borrowPhone',
+  'volPhone'
+];
+
+phoneInputIds.forEach(id => {
+  const input = document.getElementById(id);
+
+  if (!input) return;
+
+  input.setAttribute('inputmode', 'numeric');
+  input.setAttribute('maxlength', '10');
+  input.setAttribute('minlength', '10');
+  input.setAttribute('pattern', '[0-9]{10}');
+
+  input.addEventListener('input', function () {
+
+    // Remove everything except numbers
+    this.value = this.value.replace(/\D/g, '');
+
+    if (this.value.length > 10) {
+      this.value = this.value.slice(0, 10);
+    }
+
+    clearValidationError(this);
+
+    if (this.value.length > 0 && !isValidPhone(this.value)) {
+      setValidationError(
+        this,
+        'Phone number must contain exactly 10 digits.'
+      );
+    }
+  });
+
+  input.addEventListener('blur', function () {
+
+    if (!this.value) {
+      setValidationError(
+        this,
+        'Phone number is required.'
+      );
+      return;
+    }
+
+    if (!isValidPhone(this.value)) {
+      setValidationError(
+        this,
+        'Enter a valid 10-digit phone number using numbers only.'
+      );
+    } else {
+      clearValidationError(this);
+    }
+  });
+});
+
+
+// =========================================================
+// EMAIL INPUTS
+// =========================================================
+
+const emailInputIds = [
+  'contactEmail',
+  'volEmail',
+  'donorEmail'
+];
+
+emailInputIds.forEach(id => {
+  const input = document.getElementById(id);
+
+  if (!input) return;
+
+  input.setAttribute('type', 'email');
+  input.setAttribute('autocomplete', 'email');
+
+  input.addEventListener('input', function () {
+
+    // Remove spaces
+    this.value = this.value.replace(/\s/g, '');
+
+    clearValidationError(this);
+
+    if (this.value && !isValidEmail(this.value)) {
+      setValidationError(
+        this,
+        'Please enter a valid email address.'
+      );
+    }
+  });
+
+  input.addEventListener('blur', function () {
+
+    if (!this.value) {
+      setValidationError(
+        this,
+        'Email address is required.'
+      );
+      return;
+    }
+
+    if (!isValidEmail(this.value)) {
+      setValidationError(
+        this,
+        'Enter a valid email address such as name@example.com.'
+      );
+    } else {
+      clearValidationError(this);
+    }
+  });
+});
+
+
+// =========================================================
+// NAME INPUTS
+// =========================================================
+
+const nameInputIds = [
+  'contactName',
+  'itemDonorName',
+  'borrowName',
+  'volName',
+  'donorName'
+];
+
+nameInputIds.forEach(id => {
+  const input = document.getElementById(id);
+
+  if (!input) return;
+
+  input.setAttribute(
+    'pattern',
+    "[A-Za-zÀ-ÖØ-öø-ÿ .'-]+"
+  );
+
+  input.addEventListener('input', function () {
+
+    // Remove numbers and unwanted special characters
+    this.value = this.value.replace(
+      /[^\p{L} .'-]/gu,
+      ''
+    );
+
+    // Remove repeated spaces
+    this.value = this.value.replace(/\s+/g, ' ');
+
+    clearValidationError(this);
+  });
+
+  input.addEventListener('blur', function () {
+
+    this.value = formatProperName(this.value);
+
+    if (!this.value) {
+      setValidationError(
+        this,
+        'Name is required.'
+      );
+      return;
+    }
+
+    if (!isValidName(this.value)) {
+      setValidationError(
+        this,
+        'Enter a valid name using letters only.'
+      );
+    } else {
+      clearValidationError(this);
+    }
+  });
+});
+
+
+// =========================================================
+// OTHER TEXT FIELDS
+// =========================================================
+
+const textInputIds = [
+  'itemTitle',
+  'itemAuthorAge',
+  'itemClassGender',
+  'itemDescription',
+  'borrowAddress',
+  'borrowNotes',
+  'contactSubject',
+  'contactMessage'
+];
+
+textInputIds.forEach(id => {
+
+  const input = document.getElementById(id);
+
+  if (!input) return;
+
+  input.addEventListener('blur', function () {
+
+    this.value = cleanText(this.value);
+
+    // Only validate required fields
+    if (this.hasAttribute('required') && !isValidText(this.value)) {
+      setValidationError(
+        this,
+        'Please enter meaningful text.'
+      );
+    } else {
+      clearValidationError(this);
+    }
+  });
+});
+
+
+// =========================================================
+// VALIDATE COMPLETE FORM
+// =========================================================
+
+function validateFields(fieldIds) {
+
+  for (const id of fieldIds) {
+
+    const input = document.getElementById(id);
+
+    if (!input) continue;
+
+    const value = cleanText(input.value);
+
+    // Required field
+    if (input.hasAttribute('required') && !value) {
+
+      setValidationError(
+        input,
+        'This field is required.'
+      );
+
+      input.focus();
+
+      return false;
+    }
+
+
+    // Name
+    if (
+      id === 'contactName' ||
+      id === 'itemDonorName' ||
+      id === 'borrowName' ||
+      id === 'volName' ||
+      id === 'donorName'
+    ) {
+
+      if (!isValidName(value)) {
+
+        setValidationError(
+          input,
+          'Enter a valid name using letters only.'
+        );
+
+        input.focus();
+
+        return false;
+      }
+
+      input.value = formatProperName(value);
+    }
+
+
+    // Phone
+    if (
+      id === 'itemDonorPhone' ||
+      id === 'borrowPhone' ||
+      id === 'volPhone'
+    ) {
+
+      if (!isValidPhone(value)) {
+
+        setValidationError(
+          input,
+          'Phone number must contain exactly 10 digits.'
+        );
+
+        input.focus();
+
+        return false;
+      }
+    }
+
+
+    // Email
+    if (
+      id === 'contactEmail' ||
+      id === 'volEmail' ||
+      id === 'donorEmail'
+    ) {
+
+      if (!isValidEmail(value)) {
+
+        setValidationError(
+          input,
+          'Enter a valid email address.'
+        );
+
+        input.focus();
+
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 async function handleListItemSubmit(e) {
   e.preventDefault();
 
-  const categoryVal = document.getElementById('itemCategory').value;
-  const urlInputVal = document.getElementById('itemImageUrl').value.trim();
-  const finalImageUrl = selectedDonatedImageDataUrl || urlInputVal || (categoryVal === 'Book'
-    ? 'https://images.unsplash.com/photo-1599689868384-59cb2b01bb21?auto=format&fit=crop&w=600&q=80'
-    : 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80');
-
-  const newItem = {
-    category: categoryVal,
-    title: document.getElementById('itemTitle').value,
-    author_or_age: document.getElementById('itemAuthorAge').value,
-    class_or_gender: document.getElementById('itemClassGender').value,
-    location: document.getElementById('itemLocation').value,
-    condition: document.getElementById('itemCondition').value,
-    donor_name: document.getElementById('itemDonorName').value,
-    donor_phone: document.getElementById('itemDonorPhone').value,
-    description: document.getElementById('itemDescription').value,
-    image_url: finalImageUrl
-  };
-
-  try {
-    const res = await fetch('/api/items', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newItem)
-    });
-
-    if (res.ok) {
-      closeListModal();
-      clearDonatedImagePreview();
-      showToast('Item with custom photo saved to database & live on platform! 🎉');
-      fetchItems();
-      fetchStats();
-    } else {
-      showToast('Failed to save item. Try again.');
-    }
-  } catch (err) {
-    console.error('Failed to submit item:', err);
-    showToast('Server error while saving item.');
+  if (!validateFields([
+    'itemTitle',
+    'itemDonorName',
+    'itemDonorPhone',
+    'itemDescription'
+  ])) {
+    return;
   }
-}
 
-// BORROW / PICKUP REQUEST (POST TO DATABASE)
-function openBorrowModal(itemId, itemTitle) {
-  document.getElementById('borrowItemId').value = itemId;
-  document.getElementById('borrowItemTitle').value = itemTitle;
-  document.getElementById('borrowItemSubtitle').innerText = `Requesting: ${itemTitle}`;
-  document.getElementById('borrowModal').classList.remove('hidden');
-}
+  // existing code continues...
 
-function closeBorrowModal() {
-  document.getElementById('borrowModal').classList.add('hidden');
-}
+  async function handleListItemSubmit(e) {
+    e.preventDefault();
 
-async function handleBorrowSubmit(e) {
-  e.preventDefault();
-  const reqData = {
-    item_id: document.getElementById('borrowItemId').value,
-    item_title: document.getElementById('borrowItemTitle').value,
-    requester_name: document.getElementById('borrowName').value,
-    requester_phone: document.getElementById('borrowPhone').value,
-    address: document.getElementById('borrowAddress').value,
-    notes: document.getElementById('borrowNotes').value
-  };
+    const categoryVal = document.getElementById('itemCategory').value;
+    const urlInputVal = document.getElementById('itemImageUrl').value.trim();
+    const finalImageUrl = selectedDonatedImageDataUrl || urlInputVal || (categoryVal === 'Book'
+      ? 'https://images.unsplash.com/photo-1599689868384-59cb2b01bb21?auto=format&fit=crop&w=600&q=80'
+      : 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80');
 
-  try {
-    const res = await fetch('/api/borrow', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reqData)
-    });
+    const newItem = {
+      category: categoryVal,
+      title: document.getElementById('itemTitle').value,
+      author_or_age: document.getElementById('itemAuthorAge').value,
+      class_or_gender: document.getElementById('itemClassGender').value,
+      location: document.getElementById('itemLocation').value,
+      condition: document.getElementById('itemCondition').value,
+      donor_name: document.getElementById('itemDonorName').value,
+      donor_phone: document.getElementById('itemDonorPhone').value,
+      description: document.getElementById('itemDescription').value,
+      image_url: finalImageUrl
+    };
 
-    if (res.ok) {
-      closeBorrowModal();
-      showToast('Pickup request sent to donor & logged in DB! 📲');
-      fetchItems();
-    } else {
-      showToast('Error submitting request.');
+    try {
+      const res = await fetch('/api/items', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newItem)
+      });
+
+      if (res.ok) {
+        closeListModal();
+        clearDonatedImagePreview();
+        showToast('Item with custom photo saved to database & live on platform! 🎉');
+        fetchItems();
+        fetchStats();
+      } else {
+        showToast('Failed to save item. Try again.');
+      }
+    } catch (err) {
+      console.error('Failed to submit item:', err);
+      showToast('Server error while saving item.');
     }
-  } catch (err) {
-    console.error('Borrow request error:', err);
   }
-}
 
-// VOLUNTEER REGISTRATION (POST TO DATABASE)
-function openVolunteerModal() {
-  document.getElementById('volunteerModal').classList.remove('hidden');
-}
+  // BORROW / PICKUP REQUEST (POST TO DATABASE)
+  function openBorrowModal(itemId, itemTitle) {
+    document.getElementById('borrowItemId').value = itemId;
+    document.getElementById('borrowItemTitle').value = itemTitle;
+    document.getElementById('borrowItemSubtitle').innerText = `Requesting: ${itemTitle}`;
+    document.getElementById('borrowModal').classList.remove('hidden');
+  }
 
-function closeVolunteerModal() {
-  document.getElementById('volunteerModal').classList.add('hidden');
-}
+  function closeBorrowModal() {
+    document.getElementById('borrowModal').classList.add('hidden');
+  }
 
-async function handleVolunteerSubmit(e) {
-  e.preventDefault();
-  const volData = {
-    name: document.getElementById('volName').value,
-    email: document.getElementById('volEmail').value,
-    phone: document.getElementById('volPhone').value,
-    location: document.getElementById('volLocation').value,
-    role: document.getElementById('volRole').value,
-    availability: document.getElementById('volAvailability').value
-  };
+  async function handleBorrowSubmit(e) {
+    e.preventDefault();
 
-  try {
-    const res = await fetch('/api/volunteers', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(volData)
-    });
-
-    if (res.ok) {
-      closeVolunteerModal();
-      showToast('Welcome to Helping Hand! Profile saved to DB. ❤️');
-      fetchVolunteersPreview();
-      fetchStats();
-    } else {
-      showToast('Error registering volunteer.');
+    if (!validateFields([
+      'borrowName',
+      'borrowPhone',
+      'borrowAddress',
+      'borrowNotes',
+    ])) {
+      return;
     }
-  } catch (err) {
-    console.error('Volunteer registration error:', err);
+    const reqData = {
+      item_id: document.getElementById('borrowItemId').value,
+      item_title: document.getElementById('borrowItemTitle').value,
+      requester_name: document.getElementById('borrowName').value,
+      requester_phone: document.getElementById('borrowPhone').value,
+      address: document.getElementById('borrowAddress').value,
+      notes: document.getElementById('borrowNotes').value
+    };
+
+    try {
+      const res = await fetch('/api/borrow', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reqData)
+      });
+
+      if (res.ok) {
+        closeBorrowModal();
+        showToast('Pickup request sent to donor & logged in DB! 📲');
+        fetchItems();
+      } else {
+        showToast('Error submitting request.');
+      }
+    } catch (err) {
+      console.error('Borrow request error:', err);
+    }
   }
-}
 
-// MONETARY DONATION SUBMISSION
-function openDonateModal() {
-  document.getElementById('donateModal').classList.remove('hidden');
-}
+  // VOLUNTEER REGISTRATION (POST TO DATABASE)
+  function openVolunteerModal() {
+    document.getElementById('volunteerModal').classList.remove('hidden');
+  }
 
-function closeDonateModal() {
-  document.getElementById('donateModal').classList.add('hidden');
-}
+  function closeVolunteerModal() {
+    document.getElementById('volunteerModal').classList.add('hidden');
+  }
 
-function setDonateAmount(amt) {
-  document.getElementById('customDonateAmount').value = amt;
-}
+  async function handleVolunteerSubmit(e) {
+    e.preventDefault();
 
-async function handleDonateSubmit(e) {
-  e.preventDefault();
-  const donationData = {
-    amount: document.getElementById('customDonateAmount').value,
-    donor_name: document.getElementById('donorName').value,
-    email: document.getElementById('donorEmail').value,
-    cause: 'Educational Books & Clothes Drive'
-  };
+    if (!validateFields([
+      'volName',
+      'volEmail',
+      'volPhone'
+    ])) {
+      return;
+    }
+
+    const volData = {
+      name: document.getElementById('volName').value,
+      email: document.getElementById('volEmail').value,
+      phone: document.getElementById('volPhone').value,
+      location: document.getElementById('volLocation').value,
+      role: document.getElementById('volRole').value,
+      availability: document.getElementById('volAvailability').value
+    };
+
+
+    try {
+      const res = await fetch('/api/volunteers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(volData)
+      });
+
+      if (res.ok) {
+        closeVolunteerModal();
+        showToast('Welcome to Helping Hand! Profile saved to DB. ❤️');
+        fetchVolunteersPreview();
+        fetchStats();
+      } else {
+        showToast('Error registering volunteer.');
+      }
+    } catch (err) {
+      console.error('Volunteer registration error:', err);
+    }
+  }
+
+  // MONETARY DONATION SUBMISSION
+  function openDonateModal() {
+    document.getElementById('donateModal').classList.remove('hidden');
+  }
+
+  function closeDonateModal() {
+    document.getElementById('donateModal').classList.add('hidden');
+  }
+
+  function setDonateAmount(amt) {
+    document.getElementById('customDonateAmount').value = amt;
+  }
+
+  async function handleDonateSubmit(e) {
+    e.preventDefault();
+
+    if (!validateFields([
+      'donorName',
+      'donorEmail'
+    ])) {
+      return;
+    }
+
+    const amountInput = document.getElementById('customDonateAmount');
+
+    const amount = Number(amountInput.value);
+
+    if (!Number.isFinite(amount) || amount < 1) {
+      amountInput.setCustomValidity(
+        'Please enter a valid donation amount.'
+      );
+      amountInput.reportValidity();
+      return;
+    }
+
+    amountInput.setCustomValidity('');
+
+    const donationData = {
+      amount: amount,
+      donor_name: document.getElementById('donorName').value,
+      email: document.getElementById('donorEmail').value,
+      cause: 'Educational Books & Clothes Drive'
+    };
+
+
+  }
 
   try {
     const res = await fetch('/api/donations', {
@@ -1331,6 +1820,16 @@ async function handleDonateSubmit(e) {
 // CONTACT FORM SUBMISSION
 async function handleContactSubmit(e) {
   e.preventDefault();
+
+  if (!validateFields([
+    'contactName',
+    'contactEmail',
+    'contactSubject',
+    'contactMessage'
+  ])) {
+    return;
+  }
+
   const messageData = {
     name: document.getElementById('contactName').value,
     email: document.getElementById('contactEmail').value,
@@ -1338,21 +1837,22 @@ async function handleContactSubmit(e) {
     message: document.getElementById('contactMessage').value
   };
 
-  try {
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(messageData)
-    });
-
-    if (res.ok) {
-      document.getElementById('contactForm').reset();
-      showToast('Your message has been sent to our Vasai team!');
-    }
-  } catch (err) {
-    console.error('Contact error:', err);
-  }
 }
+try {
+  const res = await fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(messageData)
+  });
+
+  if (res.ok) {
+    document.getElementById('contactForm').reset();
+    showToast('Your message has been sent to our Vasai team!');
+  }
+} catch (err) {
+  console.error('Contact error:', err);
+}
+
 
 // ITEM DETAILS POPUP WITH PROMINENT TOP & BOTTOM CLOSE BUTTONS
 async function openItemDetailsModal(id) {

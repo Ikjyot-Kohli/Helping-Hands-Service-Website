@@ -28,7 +28,7 @@
     }
   </script>
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="public/styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -878,13 +878,14 @@
           <div>
             <label id="lblDonorPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone
               Number</label>
-            <input type="tel" id="itemDonorPhone" required placeholder="+91 98765 43210"
-              class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <input type="tel" id="itemDonorPhone" required inputmode="numeric" maxlength="10" minlength="10"
+              pattern="[0-9]{10}" placeholder="9876543210" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300
+            dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
         </div>
 
         <div>
-          <label id="lblItemDesc" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Short
+          <label id="lblItemDesc" class="block font-boldnp mb-1 text-slate-700 dark:text-slate-300">Short
             Description</label>
           <textarea id="itemDescription" rows="2"
             placeholder="Mention edition, subjects covered, or pickup instructions..."
@@ -933,8 +934,9 @@
         <div>
           <label id="lblBorrowPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone
             Number</label>
-          <input type="tel" id="borrowPhone" required placeholder="+91 98000 00000"
-            class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <input type="tel" id="borrowPhone" required inputmode="numeric" maxlength="10" minlength="10"
+            pattern="[0-9]{10}" placeholder="9876543210" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300
+          dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
 
         <div>
@@ -994,8 +996,9 @@
           </div>
           <div>
             <label id="lblVolPhone" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Phone</label>
-            <input type="tel" id="volPhone" required placeholder="+91 98111 22334"
-              class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <input type="tel" id="volPhone" required inputmode="numeric" maxlength="10" minlength="10"
+              pattern="[0-9]{10}" placeholder="9876543210" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300
+            dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
         </div>
 
@@ -1216,7 +1219,7 @@
   </div>
 
   <!-- JavaScript App Logic -->
-  <script src="public/app.js"></script>
+  <script src="/app.js"></script>
   <script>
     lucide.createIcons();
   </script>

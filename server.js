@@ -6,6 +6,65 @@ const { initDB, run, all, get } = require('./db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// =========================================================
+// SERVER-SIDE VALIDATION
+// =========================================================
+
+const PHONE_REGEX = /^[0-9]{10}$/;
+
+const EMAIL_REGEX =
+  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+const NAME_REGEX =
+  /^[\p{L}]+(?:[ .'-][\p{L}]+)*$/u;
+
+function cleanServerText(value) {
+  return String(value || '')
+    .trim()
+    .replace(/\s+/g, ' ');
+}
+
+function validPhone(value) {
+  return PHONE_REGEX.test(cleanServerText(value));
+}
+
+function validEmail(value) {
+  return EMAIL_REGEX.test(cleanServerText(value));
+}
+
+function validName(value) {
+  const name = cleanServerText(value);
+
+  if (!NAME_REGEX.test(name)) {
+    return false;
+  }
+
+  const letters = name.replace(/[^\p{L}]/gu, '');
+
+  return letters.length >= 2;
+}
+
+function validText(value, minLength = 2) {
+  const text = cleanServerText(value);
+
+  return (
+    text.length >= minLength &&
+    /\p{L}/u.test(text)
+  );
+}
+
+function properName(value) {
+  return cleanServerText(value)
+    .toLowerCase()
+    .split(' ')
+    .map(word =>
+      word
+        ? word.charAt(0).toUpperCase() + word.slice(1)
+        : word
+    )
+    .join(' ');
+}
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
@@ -101,10 +160,29 @@ app.post('/api/items', async (req, res) => {
       image_url
     } = req.body;
 
-    if (!title || !category || !location || !donor_name) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!title || !category || !location || !donor_name || !donor_phone) {
+      return res.status(400).json({
+        error: 'Title, category, location, donor name and phone are required.'
+      });
     }
 
+    if (!properName(donor_name)) {
+      return res.status(400).json({
+        error: 'Invalid donor name.'
+      });
+    }
+
+    if ((donor_phone)) {
+      return res.status(400).json({
+        error: 'Phone number must contain exactly 10 digits.'
+      });
+    }
+
+    if (!validText(title)) {
+      return res.status(400).json({
+        error: 'Invalid item title.'
+      });
+    }
     const defaultImg = category === 'Book'
       ? 'https://images.unsplash.com/photo-1599689868384-59cb2b01bb21?auto=format&fit=crop&w=600&q=80'
       : 'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=600&q=80';
@@ -175,8 +253,36 @@ app.post('/api/volunteers', async (req, res) => {
   try {
     const { name, email, phone, location, role, availability } = req.body;
     if (!name || !email || !phone || !location) {
-      return res.status(400).json({ error: 'Missing required volunteer fields' });
+      return res.status(400).json({
+        error: 'Name, email, phone and location are required.'
+      });
     }
+
+    if (!validName(name)) {
+      return res.status(400).json({
+        error: 'Please enter a valid name.'
+      });
+    }
+
+    if (!validEmail(email)) {
+      return res.status(400).json({
+        error: 'Please enter a valid email address.'
+      });
+    }
+
+    if (!validPhone(phone)) {
+      return res.status(400).json({
+        error: 'Phone number must contain exactly 10 digits.'
+      });
+    }
+    [
+      properName(name),
+      cleanServerText(email).toLowerCase(),
+      phone,
+      location,
+      role || 'Teaching Driver',
+      availability || 'Weekends'
+    ]
 
     const result = await run(
       `INSERT INTO volunteers (name, email, phone, location, role, availability, status) VALUES (?, ?, ?, ?, ?, ?, 'Active')`,
@@ -204,7 +310,27 @@ app.post('/api/borrow', async (req, res) => {
   try {
     const { item_id, item_title, requester_name, requester_phone, address, notes } = req.body;
     if (!item_title || !requester_name || !requester_phone) {
-      return res.status(400).json({ error: 'Missing required request fields' });
+      return res.status(400).json({
+        error: 'Name, phone and item title are required.'
+      });
+    }
+
+    if (!validName(requester_name)) {
+      return res.status(400).json({
+        error: 'Please enter a valid name.'
+      });
+    }
+
+    if (!validPhone(requester_phone)) {
+      return res.status(400).json({
+        error: 'Phone number must contain exactly 10 digits.'
+      });
+    }
+
+    if (address && !validText(address)) {
+      return res.status(400).json({
+        error: 'Please enter a valid address.'
+      });
     }
 
     const result = await run(
@@ -226,7 +352,34 @@ app.post('/api/borrow', async (req, res) => {
 });
 
 // API: Monetary Donations
-app.post('/api/donations', async (req, res) => {
+
+if (!donor_name || !email || !amount) {
+  return res.status(400).json({
+    error: 'Donor name, email and amount are required.'
+  });
+}
+
+if (!validName(donor_name)) {
+  return res.status(400).json({
+    error: 'Please enter a valid donor name.'
+  });
+}
+
+if (!validEmail(email)) {
+  return res.status(400).json({
+    error: 'Please enter a valid email address.'
+  });
+}
+
+const donationAmount = Number(amount);
+
+if (!Number.isFinite(donationAmount) || donationAmount <= 0) {
+  return res.status(400).json({
+    error: 'Please enter a valid donation amount.'
+  });
+}
+
+/*app.post('/api/donations', async (req, res) => {
   try {
     const { donor_name, email, amount, cause } = req.body;
     const result = await run(
@@ -237,9 +390,40 @@ app.post('/api/donations', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+});*/
 
 // API: Contact Form
+
+if (!name || !email || !message) {
+  return res.status(400).json({
+    error: 'Name, email and message are required.'
+  });
+}
+
+if (!validName(name)) {
+  return res.status(400).json({
+    error: 'Please enter a valid name.'
+  });
+}
+
+if (!validEmail(email)) {
+  return res.status(400).json({
+    error: 'Please enter a valid email address.'
+  });
+}
+
+if (!validText(message, 5)) {
+  return res.status(400).json({
+    error: 'Please enter a meaningful message.'
+  });
+}
+
+if (subject && !validText(subject, 3)) {
+  return res.status(400).json({
+    error: 'Please enter a valid subject.'
+  });
+}
+
 app.post('/api/contact', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
