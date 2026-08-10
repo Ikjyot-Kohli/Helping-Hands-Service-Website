@@ -604,24 +604,34 @@ const i18n = {
   }
 };
 
+// =========================================================
 // INITIALIZATION
-document.addEventListener('DOMContentLoaded', () => {
+// =========================================================
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  console.log('Helping Hands app.js loaded successfully');
+
   setupTheme();
   setupScrollSpy();
   setupModalBackdropListeners();
 
-  // Set initial language dropdown value
   const langSelect = document.getElementById('langSelect');
-  if (langSelect) langSelect.value = currentLang;
 
-  // Apply language immediately
-  changeLanguage(currentLang, false);
+  const savedLanguage = localStorage.getItem('hh_lang') || 'en';
+
+  if (langSelect) {
+    langSelect.value = savedLanguage;
+  }
+
+  changeLanguage(savedLanguage, false);
 
   fetchStats();
   fetchItems();
   fetchVolunteersPreview();
   fetchNotificationsFeed();
   updateWishlistBadge();
+
 });
 
 // CLOSE MODALS ON BACKDROP CLICK OR ESC KEY
@@ -678,48 +688,106 @@ function setupScrollSpy() {
   sections.forEach((sec) => observer.observe(sec));
 }
 
-// DARK / LIGHT THEME TOGGLE
+// =========================================================
+// LIGHT / DARK MODE
+// =========================================================
+
 function setupTheme() {
-  const savedTheme = localStorage.getItem('hh_theme') || 'light';
+
+  const savedTheme =
+    localStorage.getItem('hh_theme') || 'light';
+
   if (savedTheme === 'dark') {
     document.documentElement.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
   }
+
   updateThemeIcon();
 }
+
 
 function toggleTheme() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('hh_theme', isDark ? 'dark' : 'light');
+
+  const html = document.documentElement;
+
+  const isDark =
+    html.classList.contains('dark');
+
+  if (isDark) {
+
+    html.classList.remove('dark');
+
+    localStorage.setItem('hh_theme', 'light');
+
+  } else {
+
+    html.classList.add('dark');
+
+    localStorage.setItem('hh_theme', 'dark');
+
+  }
+
   updateThemeIcon();
-  showToast(isDark ? 'Switched to Dark Mode 🌙' : 'Switched to Light Mode ☀️');
+
 }
 
+
 function updateThemeIcon() {
-  const icon = document.getElementById('themeIcon');
-  if (!icon) return;
-  const isDark = document.documentElement.classList.contains('dark');
-  icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-  lucide.createIcons();
+
+  const icon =
+    document.getElementById('themeIcon');
+
+  if (!icon) {
+    return;
+  }
+
+  const isDark =
+    document.documentElement.classList.contains('dark');
+
+  icon.setAttribute(
+    'data-lucide',
+    isDark ? 'sun' : 'moon'
+  );
+
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+
 }
 
 // COMPLETE MULTI-LANGUAGE ENGINE
+
 function changeLanguage(lang, notify = true) {
-  if (!i18n[lang]) return;
+
+  console.log('Changing language to:', lang);
+
+  if (!i18n[lang]) {
+    console.error('Language not found:', lang);
+    return;
+  }
+
   currentLang = lang;
+
   localStorage.setItem('hh_lang', lang);
+
   const dict = i18n[lang];
 
-  // Helper to safely set innerHTML or textContent
-  const setText = (id, text, isHtml = false) => {
-    const el = document.getElementById(id);
-    if (el) {
-      if (isHtml) el.innerHTML = text;
-      else el.textContent = text;
+  const setText = function (id, text, isHtml = false) {
+
+    const element = document.getElementById(id);
+
+    if (!element) {
+      console.warn('Translation element not found:', id);
+      return;
+    }
+
+    if (isHtml) {
+      element.innerHTML = text;
+    } else {
+      element.textContent = text;
     }
   };
-
   // 1. Top Banner & Header Nav
   setText('txtBannerMsg', dict.bannerMsg);
   setText('btnBannerDonate', dict.btnBannerDonate);
@@ -1652,173 +1720,228 @@ async function handleListItemSubmit(e) {
       showToast('Server error while saving item.');
     }
   }
+}
 
-  // BORROW / PICKUP REQUEST (POST TO DATABASE)
-  function openBorrowModal(itemId, itemTitle) {
-    document.getElementById('borrowItemId').value = itemId;
-    document.getElementById('borrowItemTitle').value = itemTitle;
-    document.getElementById('borrowItemSubtitle').innerText = `Requesting: ${itemTitle}`;
-    document.getElementById('borrowModal').classList.remove('hidden');
+// BORROW / PICKUP REQUEST (POST TO DATABASE)
+function openBorrowModal(itemId, itemTitle) {
+  document.getElementById('borrowItemId').value = itemId;
+  document.getElementById('borrowItemTitle').value = itemTitle;
+  document.getElementById('borrowItemSubtitle').innerText = `Requesting: ${itemTitle}`;
+  document.getElementById('borrowModal').classList.remove('hidden');
+}
+
+function closeBorrowModal() {
+  document.getElementById('borrowModal').classList.add('hidden');
+}
+
+async function handleBorrowSubmit(e) {
+  e.preventDefault();
+
+  if (!validateFields([
+    'borrowName',
+    'borrowPhone',
+    'borrowAddress',
+    'borrowNotes',
+  ])) {
+    return;
   }
-
-  function closeBorrowModal() {
-    document.getElementById('borrowModal').classList.add('hidden');
-  }
-
-  async function handleBorrowSubmit(e) {
-    e.preventDefault();
-
-    if (!validateFields([
-      'borrowName',
-      'borrowPhone',
-      'borrowAddress',
-      'borrowNotes',
-    ])) {
-      return;
-    }
-    const reqData = {
-      item_id: document.getElementById('borrowItemId').value,
-      item_title: document.getElementById('borrowItemTitle').value,
-      requester_name: document.getElementById('borrowName').value,
-      requester_phone: document.getElementById('borrowPhone').value,
-      address: document.getElementById('borrowAddress').value,
-      notes: document.getElementById('borrowNotes').value
-    };
-
-    try {
-      const res = await fetch('/api/borrow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(reqData)
-      });
-
-      if (res.ok) {
-        closeBorrowModal();
-        showToast('Pickup request sent to donor & logged in DB! 📲');
-        fetchItems();
-      } else {
-        showToast('Error submitting request.');
-      }
-    } catch (err) {
-      console.error('Borrow request error:', err);
-    }
-  }
-
-  // VOLUNTEER REGISTRATION (POST TO DATABASE)
-  function openVolunteerModal() {
-    document.getElementById('volunteerModal').classList.remove('hidden');
-  }
-
-  function closeVolunteerModal() {
-    document.getElementById('volunteerModal').classList.add('hidden');
-  }
-
-  async function handleVolunteerSubmit(e) {
-    e.preventDefault();
-
-    if (!validateFields([
-      'volName',
-      'volEmail',
-      'volPhone'
-    ])) {
-      return;
-    }
-
-    const volData = {
-      name: document.getElementById('volName').value,
-      email: document.getElementById('volEmail').value,
-      phone: document.getElementById('volPhone').value,
-      location: document.getElementById('volLocation').value,
-      role: document.getElementById('volRole').value,
-      availability: document.getElementById('volAvailability').value
-    };
-
-
-    try {
-      const res = await fetch('/api/volunteers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(volData)
-      });
-
-      if (res.ok) {
-        closeVolunteerModal();
-        showToast('Welcome to Helping Hand! Profile saved to DB. ❤️');
-        fetchVolunteersPreview();
-        fetchStats();
-      } else {
-        showToast('Error registering volunteer.');
-      }
-    } catch (err) {
-      console.error('Volunteer registration error:', err);
-    }
-  }
-
-  // MONETARY DONATION SUBMISSION
-  function openDonateModal() {
-    document.getElementById('donateModal').classList.remove('hidden');
-  }
-
-  function closeDonateModal() {
-    document.getElementById('donateModal').classList.add('hidden');
-  }
-
-  function setDonateAmount(amt) {
-    document.getElementById('customDonateAmount').value = amt;
-  }
-
-  async function handleDonateSubmit(e) {
-    e.preventDefault();
-
-    if (!validateFields([
-      'donorName',
-      'donorEmail'
-    ])) {
-      return;
-    }
-
-    const amountInput = document.getElementById('customDonateAmount');
-
-    const amount = Number(amountInput.value);
-
-    if (!Number.isFinite(amount) || amount < 1) {
-      amountInput.setCustomValidity(
-        'Please enter a valid donation amount.'
-      );
-      amountInput.reportValidity();
-      return;
-    }
-
-    amountInput.setCustomValidity('');
-
-    const donationData = {
-      amount: amount,
-      donor_name: document.getElementById('donorName').value,
-      email: document.getElementById('donorEmail').value,
-      cause: 'Educational Books & Clothes Drive'
-    };
-
-
-  }
+  const reqData = {
+    item_id: document.getElementById('borrowItemId').value,
+    item_title: document.getElementById('borrowItemTitle').value,
+    requester_name: document.getElementById('borrowName').value,
+    requester_phone: document.getElementById('borrowPhone').value,
+    address: document.getElementById('borrowAddress').value,
+    notes: document.getElementById('borrowNotes').value
+  };
 
   try {
-    const res = await fetch('/api/donations', {
+    const res = await fetch('/api/borrow', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reqData)
+    });
+
+    if (res.ok) {
+      closeBorrowModal();
+      showToast('Pickup request sent to donor & logged in DB! 📲');
+      fetchItems();
+    } else {
+      showToast('Error submitting request.');
+    }
+  } catch (err) {
+    console.error('Borrow request error:', err);
+  }
+}
+
+// VOLUNTEER REGISTRATION (POST TO DATABASE)
+function openVolunteerModal() {
+  document.getElementById('volunteerModal').classList.remove('hidden');
+}
+
+function closeVolunteerModal() {
+  document.getElementById('volunteerModal').classList.add('hidden');
+}
+
+async function handleVolunteerSubmit(e) {
+  e.preventDefault();
+
+  if (!validateFields([
+    'volName',
+    'volEmail',
+    'volPhone'
+  ])) {
+    return;
+  }
+
+  const volData = {
+    name: document.getElementById('volName').value,
+    email: document.getElementById('volEmail').value,
+    phone: document.getElementById('volPhone').value,
+    location: document.getElementById('volLocation').value,
+    role: document.getElementById('volRole').value,
+    availability: document.getElementById('volAvailability').value
+  };
+
+
+  try {
+    const res = await fetch('/api/volunteers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(volData)
+    });
+
+    if (res.ok) {
+      closeVolunteerModal();
+      showToast('Welcome to Helping Hand! Profile saved to DB. ❤️');
+      fetchVolunteersPreview();
+      fetchStats();
+    } else {
+      showToast('Error registering volunteer.');
+    }
+  } catch (err) {
+    console.error('Volunteer registration error:', err);
+  }
+}
+
+// MONETARY DONATION SUBMISSION
+function openDonateModal() {
+  document.getElementById('donateModal').classList.remove('hidden');
+}
+
+function closeDonateModal() {
+  document.getElementById('donateModal').classList.add('hidden');
+}
+
+function setDonateAmount(amt) {
+  document.getElementById('customDonateAmount').value = amt;
+}
+
+// =========================================================
+// MONETARY DONATION SUBMISSION
+// =========================================================
+
+function openDonateModal() {
+  document.getElementById('donateModal').classList.remove('hidden');
+}
+
+function closeDonateModal() {
+  document.getElementById('donateModal').classList.add('hidden');
+}
+
+function setDonateAmount(amt) {
+  document.getElementById('customDonateAmount').value = amt;
+}
+
+async function handleDonateSubmit(e) {
+
+  e.preventDefault();
+
+  if (!validateFields([
+    'donorName',
+    'donorEmail'
+  ])) {
+    return;
+  }
+
+  const amountInput =
+    document.getElementById('customDonateAmount');
+
+  const amount =
+    Number(amountInput.value);
+
+  if (!Number.isFinite(amount) || amount < 1) {
+
+    amountInput.setCustomValidity(
+      'Please enter a valid donation amount.'
+    );
+
+    amountInput.reportValidity();
+
+    return;
+  }
+
+  amountInput.setCustomValidity('');
+
+  const donationData = {
+    amount: amount,
+    donor_name:
+      document.getElementById('donorName').value,
+    email:
+      document.getElementById('donorEmail').value,
+    cause:
+      'Educational Books & Clothes Drive'
+  };
+
+  try {
+
+    const res = await fetch('/api/donations', {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
       body: JSON.stringify(donationData)
     });
 
     if (res.ok) {
+
       closeDonateModal();
-      showToast(`Thank you ${donationData.donor_name}! Contribution of ₹${donationData.amount} received. ❤️`);
+
+      showToast(
+        `Thank you ${donationData.donor_name}! Contribution of ₹${donationData.amount} received. ❤️`
+      );
+
+    } else {
+
+      const data = await res.json().catch(() => ({}));
+
+      showToast(
+        data.error || 'Donation failed. Please try again.'
+      );
     }
+
   } catch (err) {
-    console.error('Donation error:', err);
+
+    console.error(
+      'Donation error:',
+      err
+    );
+
+    showToast(
+      'Server error while processing donation.'
+    );
   }
 }
 
+
+
+// =========================================================
 // CONTACT FORM SUBMISSION
+// =========================================================
+
 async function handleContactSubmit(e) {
+
   e.preventDefault();
 
   if (!validateFields([
@@ -1831,28 +1954,68 @@ async function handleContactSubmit(e) {
   }
 
   const messageData = {
-    name: document.getElementById('contactName').value,
-    email: document.getElementById('contactEmail').value,
-    subject: document.getElementById('contactSubject').value,
-    message: document.getElementById('contactMessage').value
+
+    name:
+      document.getElementById('contactName').value,
+
+    email:
+      document.getElementById('contactEmail').value,
+
+    subject:
+      document.getElementById('contactSubject').value,
+
+    message:
+      document.getElementById('contactMessage').value
+
   };
 
-}
-try {
-  const res = await fetch('/api/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(messageData)
-  });
+  try {
 
-  if (res.ok) {
-    document.getElementById('contactForm').reset();
-    showToast('Your message has been sent to our Vasai team!');
+    const res = await fetch('/api/contact', {
+
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify(messageData)
+
+    });
+
+    if (res.ok) {
+
+      document
+        .getElementById('contactForm')
+        .reset();
+
+      showToast(
+        'Your message has been sent to our Vasai team!'
+      );
+
+    } else {
+
+      const data =
+        await res.json().catch(() => ({}));
+
+      showToast(
+        data.error ||
+        'Unable to send your message.'
+      );
+    }
+
+  } catch (err) {
+
+    console.error(
+      'Contact error:',
+      err
+    );
+
+    showToast(
+      'Server error while sending your message.'
+    );
   }
-} catch (err) {
-  console.error('Contact error:', err);
 }
-
 
 // ITEM DETAILS POPUP WITH PROMINENT TOP & BOTTOM CLOSE BUTTONS
 async function openItemDetailsModal(id) {
@@ -2067,27 +2230,60 @@ async function fetchNotificationsFeed() {
 async function fetchVolunteersPreview() {
   try {
     const res = await fetch('/api/volunteers');
+
+    if (!res.ok) {
+      throw new Error(`HTTP error: ${res.status}`);
+    }
+
     const volunteers = await res.json();
-    const container = document.getElementById('volunteerListPreview');
-    if (!container) return;
+
+    const container =
+      document.getElementById('volunteerListPreview');
+
+    if (!container) {
+      return;
+    }
+
     const preview = volunteers.slice(0, 3);
 
     container.innerHTML = preview.map((v) => `
       <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 text-xs">
+
         <div class="flex items-center gap-3">
+
           <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 font-bold flex items-center justify-center">
-            ${v.name.charAt(0)}
+            ${v.name ? v.name.charAt(0).toUpperCase() : '?'}
           </div>
+
           <div>
-            <h5 class="font-bold text-slate-800 dark:text-slate-200">${escapeHtml(v.name)}</h5>
-            <p class="text-[10px] text-slate-500">${escapeHtml(v.role)} • ${escapeHtml(v.location)}</p>
+
+            <h5 class="font-bold text-slate-800 dark:text-slate-200">
+              ${escapeHtml(v.name || '')}
+            </h5>
+
+            <p class="text-[10px] text-slate-500">
+              ${escapeHtml(v.role || '')} •
+              ${escapeHtml(v.location || '')}
+            </p>
+
           </div>
+
         </div>
-        <span class="text-[10px] bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300 font-semibold px-2 py-0.5 rounded-full">${v.availability || 'Active'}</span>
+
+        <span class="text-[10px] bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300 font-semibold px-2 py-0.5 rounded-full">
+          ${escapeHtml(v.availability || 'Active')}
+        </span>
+
       </div>
     `).join('');
+
   } catch (err) {
-    console.error('Failed to fetch volunteer preview:', err);
+
+    console.error(
+      'Failed to fetch volunteer preview:',
+      err
+    );
+
   }
 }
 
@@ -2353,7 +2549,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Email fields
   const emailFields = [
     'volEmail',
-    'donorEmail'
+    'donorEmail',
+    'contactEmail'
   ];
 
   emailFields.forEach((id) => {

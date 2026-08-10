@@ -70,10 +70,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Initialize SQLite database
-initDB()
-  .then(() => console.log('Database initialized successfully.'))
-  .catch((err) => console.error('Database initialization error:', err));
 
 // API: Stats counter
 app.get('/api/stats', async (req, res) => {
@@ -506,7 +502,26 @@ app.get('/api/notifications', async (req, res) => {
   ]);
 });
 
-// Start Server
+/*Start Server
 app.listen(PORT, () => {
   console.log(`Helping Hands server running at http://localhost:${PORT}`);
-});
+});*/
+
+// =========================================================
+// START SERVER AFTER DATABASE INITIALIZATION
+// =========================================================
+
+async function startServer() {
+  try {
+    await initDB();
+
+    app.listen(PORT, () => {
+      console.log(`Helping Hands server running at http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

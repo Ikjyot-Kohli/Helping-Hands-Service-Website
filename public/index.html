@@ -698,7 +698,7 @@
           <div>
             <label id="lblContactEmail" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your
               Email</label>
-            <input type="email" id="contactEmail" required placeholder="your@gmail.com"
+            <input type="email" id="contactEmail" autocomplete="email" required placeholder="your@gmail.com"
               class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
         </div>
@@ -872,7 +872,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label id="lblDonorName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Donor Name</label>
-            <input type="text" id="itemDonorName" required placeholder="Your full name"
+            <input type="text" id="itemDonorName" autocomplete="name" required placeholder="Your full name"
               class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
           <div>
@@ -927,7 +927,7 @@
         <div>
           <label id="lblBorrowName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Your Full
             Name</label>
-          <input type="text" id="borrowName" required placeholder="e.g. Sameer Khan"
+          <input type="text" id="borrowName" autocomplete="name" required placeholder="e.g. Sameer Khan"
             class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
 
@@ -984,14 +984,14 @@
       <form onsubmit="handleVolunteerSubmit(event)" class="space-y-3 text-xs">
         <div>
           <label id="lblVolName" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Full Name</label>
-          <input type="text" id="volName" required placeholder="e.g. Aarav Mehta"
+          <input type="text" id="volName" autocomplete="name" required placeholder="e.g. Aarav Mehta"
             class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label id="lblVolEmail" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Email</label>
-            <input type="email" id="volEmail" required placeholder="aarav@gmail.com"
+            <input type="email" id="volEmail" autocomplete="email" required placeholder="aarav@gmail.com"
               class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
           <div>
@@ -1092,7 +1092,7 @@
         <div>
           <label id="lblDonorFinEmail" class="block font-bold mb-1 text-slate-700 dark:text-slate-300">Email
             Address</label>
-          <input type="email" id="donorEmail" required placeholder="ananya@gmail.com"
+          <input type="email" id="donorEmail" autocomplete="email" required placeholder="ananya@gmail.com"
             class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
 
